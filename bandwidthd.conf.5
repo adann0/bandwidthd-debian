@@ -1,0 +1,72 @@
+.TH BANDWIDTHD.CONF 5 "5 Jul 2004"
+.SH NAME
+bandwidthd.conf \- configuration file for bandwidthd
+.SH DESCRIPTION
+.LP
+The file,
+.IR /etc/bandwidthd/bandwidthd.conf ,
+is read by bandwidthd when started. It contains a small set of tunable options
+for bandwidthd features that can be adjusted.
+.SH OPTIONS
+.TP
+.BI "subnet" " <network> <netmask>"
+Subnet to log traffic for.
+.TP
+.BI "dev" " <device>"
+Device to listen on.
+.TP
+.BI "skip_intervals" " <n>"
+Number on intervals (2.5 minute) to skip between graphing.
+Default 0.
+.TP
+.BI "graph_cutoff" " <kilobytes-minimum>"
+Number of kilobytes required before drawing a graph for a host.
+Default 1024.
+.TP
+.BI "promiscuous" " <bool>"
+Put device in promisc ("eavesdropping") mode.
+Default true.
+.TP
+.BI "output_cdf" " <bool>"
+Write logfiles for analyzed traffic.
+Default false.
+.TP
+.BI "recover_cdf" " <bool>"
+Recover from logfiles after restart.
+Default false.
+.br
+.B
+Warning:
+This can take very long time if the logfiles are big.
+.br
+Enabling this and having bandwidthd start on system start might be a bad idea.
+It will delay your possibilities to log in locally since it's not done in
+the background.
+.TP
+.BI "filter" " <pcap-filter-rule>"
+Pcap filter rule to use. Always include "ip" to avoid weird problems.
+Default "ip".
+.TP
+.BI "graph" " <bool>"
+Write graphs and html for analyzed traffic.
+Default true.
+.TP
+.BI "meta_refresh" " <seconds>"
+Number of seconds before html-page reloads. 0 to disable.
+Default 150.
+.LP
+.SH FILES
+.nf
+/etc/bandwidthd/bandwidthd.conf	- configuration file.
+/etc/init.d/bandwidthd			- startscript.
+.fi
+.SH SEE ALSO
+bandwidthd(8)
+.br
+.sp
+Furter information available at the website:
+.br
+.I http://bandwidthd.sourceforge.net
+.SH AUTHOR
+This manual page was written by Andreas Henriksson <andreas@fatal.se>, for the Debian GNU/Linux system.
+

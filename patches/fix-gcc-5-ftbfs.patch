@@ -1,0 +1,30 @@
+From: Andreas Henriksson <andreas@fatal.se>
+Subject: Fix linking failure when building with gcc-5
+
+The HostIp2CharIp function can not be declared inline since
+it is called from multiple other sources.
+
+https://bugs.debian.org/777794
+
+--- a/bandwidthd.c
++++ b/bandwidthd.c
+@@ -1276,7 +1276,7 @@
+ 
+ size_t ICGrandTotalDataPoints = 0;
+ 
+-char inline *HostIp2CharIp(unsigned long ipaddr, char *buffer)
++char *HostIp2CharIp(unsigned long ipaddr, char *buffer)
+     {
+ 	struct in_addr in_addr;
+ 	char *s;
+--- a/bandwidthd.h
++++ b/bandwidthd.h
+@@ -225,7 +225,7 @@
+ void MonitorSubnet(unsigned int ip, unsigned int mask);
+ 
+ // ************ This function converts and IP to a char string
+-char inline 	*HostIp2CharIp(unsigned long ipaddr, char *buffer);
++char	 	*HostIp2CharIp(unsigned long ipaddr, char *buffer);
+ 
+ // ************ This function converts the numbers for each quad into an IP
+ inline uint32_t IpAddr(unsigned char q1, unsigned char q2, unsigned char q3, unsigned char q4);

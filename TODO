@@ -1,0 +1,12 @@
+TODO for debian package:
+-----------------------------------------------------------------------------
+- audit source to make sure kilo is k (not K), mega is M (not m),
+  giga is G (not g), bit is b (not B), byte is B (not b) and
+  seconds is s (not sec).
+
+- postgresql: support installing a "sensor".
+  See dbconfig-common section 3.2.5:
+  "Packages that connect to but should not create databases (read-only frontends)"
+  http://people.debian.org/~seanius/policy/dbconfig-common-using.html/ch-develguide.html#s-frontends
+  (Also remove note from debian/bandwidthd-pgsql.NEWS about sensors not yet
+  supported)

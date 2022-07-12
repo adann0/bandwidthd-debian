@@ -1,0 +1,48 @@
+Source: bandwidthd
+Section: net
+Priority: optional
+Maintainer: Debian QA Group <packages@qa.debian.org>
+Build-Depends: autotools-dev,
+               bison,
+               debhelper (>= 9),
+               dh-autoreconf,
+               flex,
+               libgd-dev,
+               libpcap0.8-dev | libpcap-dev,
+               libpq-dev,
+               po-debconf
+Standards-Version: 3.9.4
+Homepage: http://bandwidthd.sourceforge.net/
+
+Package: bandwidthd
+Architecture: any
+Depends: ucf, ${misc:Depends}, ${shlibs:Depends}, lsb-base
+Suggests: apache2
+Conflicts: apache2 (<< 2.4), bandwidthd-pgsql
+Description: Tracks usage of TCP/IP and builds html files with graphs
+ BandwidthD tracks usage of TCP/IP network subnets and builds html files
+ with graphs to display utilization. Charts are built by individual IPs.
+ Color Codes HTTP, TCP,UDP, ICMP, VPN, P2P, etc.
+ .
+ This is the static version, see bandwidthd-pgsql for multi sensor/php frontend
+ bandwidthd.
+
+Package: bandwidthd-pgsql
+Architecture: any
+Depends: dbconfig-common,
+         postgresql-client,
+         ucf,
+         ${misc:Depends},
+         ${shlibs:Depends},
+         lsb-base
+Recommends: php, php-gd, php-pgsql
+Suggests: apache2, postgresql
+Conflicts: apache2 (<< 2.4), bandwidthd
+Description: Tracks usage of TCP/IP and builds html files with graphs
+ BandwidthD tracks usage of TCP/IP network subnets and builds html files
+ with graphs to display utilization. Charts are built by individual IPs.
+ Color Codes HTTP, TCP,UDP, ICMP, VPN, P2P, etc.
+ .
+ This is the PostgreSQL version of bandwidthd which supports multiple sensors
+ and uses a dynamic (php-based) web interface. If you don't need these features
+ then using the package bandwidthd is suggested.

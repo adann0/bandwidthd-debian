@@ -1,0 +1,172 @@
+# Danish translation Bandwidthd.
+# Copyright (C) 2010 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Bandwidthd package.
+# Joe Hansen <joedalton2@yahoo.dk>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Bandwidthd\n"
+"Report-Msgid-Bugs-To: andreas@fatal.se\n"
+"POT-Creation-Date: 2007-03-23 10:46+0100\n"
+"PO-Revision-Date: 2010-05-03 17:30+01:00\n"
+"Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
+"Language-Team: Danish <debian-l10n-danish@lists.debian.org> \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Description
+#: ../templates:1001
+msgid "Interface to listen on:"
+msgstr "Grænseflade der skal lyttes på:"
+
+#. Type: select
+#. Description
+#: ../templates:1001
+msgid ""
+"Bandwidthd needs to know which interface it should listen for traffic on. "
+"Only a single interface can be specified. If you want to listen on all "
+"interfaces you should specify the metainterface \"any\". Running "
+"\"bandwidthd -l\" will list available interfaces."
+msgstr ""
+"Bandwidthd har brug for at vide hvilken grænseflade den skal lytte efter "
+"trafik på. Kun en grænseflade kan angives. Hvis du ønsker at lytte på alle "
+"grænsefalder bør du angive metagrænsefladen »any«. Kørsel af »bandwidthd -l« "
+"vil vise alle tilgængelige grænseflader."
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid "Subnets to log details about:"
+msgstr "Undernet der skal logges detaljer omkring:"
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid ""
+"Bandwidthd can create graphs for one or several ip-subnets. Subnets are "
+"specified either in dotted-quad format (192.168.0.0 255.255.0.0) or in CIDR "
+"format (192.168.0.0/16) and separated by a comma. Example: 192.168.0.0/16, "
+"10.0.0.0 255.0.0.0, 172.16.1.0/24. If you don't know what to specify then "
+"you can use 0.0.0.0/0 but it is strongly discouraged."
+msgstr ""
+"Bandwidthd kan oprette grafer for en eller flere ip-undernet. Undernet er "
+"angivet enten i formatet dotted-quad (192.168.0.0 255.255.0.0) eller i CIDR-"
+"format (192.168.0.0/16) og adskilt af et komma. Eksempel: 192.168.0.0/16, "
+"10.0.0.0.255.0.0.0, 172.16.1.0/24. Hvis du ikke ved hvad der skal angives så "
+"kan du bruge 0.0.0.0/0 men det frarådes stærkt."
+
+#. Type: boolean
+#. Description
+#: ../templates:3001
+msgid "Output CDF data logs?"
+msgstr "Vis CDF-datalogge?"
+
+#. Type: boolean
+#. Description
+#: ../templates:3001
+msgid ""
+"Bandwidthd can log captured traffic information to Common Data File (CDF) "
+"logs. These logs are required if you want to keep old information stored "
+"between restarts of the bandwidthd daemon. Also see the recovercdf "
+"configuration option."
+msgstr ""
+"Bandwidthd kan logge optaget trafikinformation til logge for Common Data "
+"File (CDF). Disse logge kræves, hvis du ønsker at holde gammel information "
+"gemt mellem opstart af bandwidthd-dæmonen. Se også "
+"konfigurationsindstillingen til recovercdf."
+
+#. Type: boolean
+#. Description
+#: ../templates:4001
+msgid "Recover old data from logs on restart?"
+msgstr "Gendan gamle data fra logge ved genstart?"
+
+#. Type: boolean
+#. Description
+#: ../templates:4001
+msgid ""
+"If old data is going to be outputed in the graphs, it needs to be read when "
+"BandwidthD is restarted. Parsing the CDF logs can take quite some time on a "
+"slow machine so you might want to disable it, but then you'll lose the "
+"information in the graphs after a reboot and similar.... Also make sure the "
+"output_cdf config option is enabled."
+msgstr ""
+"Hvis gamle data skal vises i graferne, så skal de læses når BandwidthD "
+"genstartes. Fortolkning af CDF-logge kan tage noget tid på en sløv maskine "
+"så du vil måske ønske at slå det fra, men så mister du informationen i "
+"graferne efter en genstart og lignende.... Du skal også sikre dig, at "
+"konfigurationstilvalget output_cdf er slået til."
+
+#. Type: string
+#. Description
+#: ../templates:5001
+msgid "Graph webpage autorefresh delay (seconds):"
+msgstr "Automatisk opdateringsforsinkelse for grafinternetside (sekunder):"
+
+#. Type: string
+#. Description
+#: ../templates:5001
+msgid ""
+"With this option you can tweak the delay used in the html as \"META REFRESH"
+"\" value. The default is 150 seconds (2.5 minutes). To disable automatic "
+"reloads of the webpage enter 0. This way the visitor will have to manually "
+"push refresh in his browser to get updated graphs."
+msgstr ""
+"Med dette tilvalg kan du indstille forsinkelsen brugt i html'en under »META "
+"REFRESH«. Standarden er 150 sekunder (2,5 minutter). For at deaktivere "
+"automatisk genindlæsning af internetsiden indtastes 0. På den måde vil den "
+"besøgende manuelt skulle trykke på opdater i sin browser for at hente "
+"opdaterede grafer."
+
+#. Type: boolean
+#. Description
+#: ../templates:6001
+msgid "Put interface in PROMISC mode?"
+msgstr "Sæt grænsefalde i PROMISC-tilstand?"
+
+#. Type: boolean
+#. Description
+#: ../templates:6001
+msgid ""
+"If this option is enabled, all interfaces used to capture traffic "
+"information will be put in promiscuous mode. This way traffic thats not "
+"routed via the machine running bandwidthd might be trackable anyway. "
+"Enabling promiscuous mode will probably not be able to capture any more "
+"traffic in a normal switched network. Also rootkit detectors might warn "
+"about bandwidthd being a virus if using promiscuous mode. You should "
+"probably leave this option disabled."
+msgstr ""
+"Hvis denne indstilling er aktiveret, vil alle grænseflader brugt til at "
+"registrere trafikinformation blive sat i omflakkende tilstand. På denne måde "
+"vil trafik som ikke sendes via maskinen der kører bandwidthd stadig kunne "
+"være sporbart. Aktivering af omflakkende tilstand vil sandsynligvis ikke "
+"være i stand til at registrere mere trafik i et normalt omstillet netværk. "
+"Rootkit-detektiver vil måske også advare om at bandwidthd er en virus hvis "
+"den bruger omflakkende tilstand. Du skal højst sandsynligt lade denne "
+"indstilling være deaktiveret."
+
+#. Type: string
+#. Description
+#: ../templates:7001
+msgid "This sensors identification string:"
+msgstr "Denne sensors identifikationsstreng:"
+
+#. Type: string
+#. Description
+#: ../templates:7001
+msgid ""
+"Each sensor should have an identification string to be able to tell from "
+"where the traffic in the PostgreSQL-database was detected on. This option is "
+"usually set to the fully qualified hostname of the machine running the "
+"bandwidthd sensor. This needs to be a unique string which no other "
+"bandwidthd sensor that reports to the same database uses."
+msgstr ""
+"Hver sensor skal have en identifikationsstreng for at være i stand til at "
+"fortælle hvor trafikken i PostgreSQL-databasen blev registreret. Denne "
+"indstilling er normalt angivet som værende det fuldt kvalificeret værtsnavn "
+"på maskinen som kører bandwidthd-sensoren. Denne skal være en unik streng "
+"forskellig fra alle andre bandwidthd-sensorer som rapporterer til den samme "
+"database."

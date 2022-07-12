@@ -1,0 +1,17 @@
+bandwidthd (2.0.1+cvs20071208-1) unstable; urgency=low
+
+  The PostgreSQL version of BandwidthD (bandwidthd-pgsql) now uses the
+  dbconfig-common system to automatically set up the database used for
+  storing data sent in by the daemons runnings as traffic sensors.
+  This means we have installed a summarizer script in /etc/cron.weekly/
+  and have configuration files set up via debconf questions.
+  Manual configurations of previous versions are not handled!
+  Purging old versions of bandwidthd-pgsql and reinstalling is recommended.
+
+  Note: for now only installing as the main bandwidthd process, the one
+  that creates a new database to report into, is supported. For installing
+  bandwidthd sensors, I guess you can create a new dummy database and then
+  manually reconfiguring /etc/bandwidthd/bandwidthd.conf to report to the
+  real main database would work.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Tue, 04 Sep 2007 09:52:35 +0200

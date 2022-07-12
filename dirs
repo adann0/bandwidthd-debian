@@ -1,0 +1,5 @@
+usr/sbin
+etc/bandwidthd
+var/lib/bandwidthd
+var/lib/bandwidthd/htdocs
+etc/apache2/conf-available

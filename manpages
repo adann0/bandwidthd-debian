@@ -1,0 +1,3 @@
+debian/bandwidthd.conf.5
+debian/bandwidthd.8
+debian/bd_pgsql_purge.8

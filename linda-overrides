@@ -1,0 +1,3 @@
+# updated from autotools-dev at build time by dpatch.
+Tag: config-too-old
+Data: config\.(guess|sub)

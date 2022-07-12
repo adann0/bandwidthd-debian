@@ -1,0 +1,67 @@
+bandwidthd for Debian
+=============================================================================
+
+Configuring bandwidthd:
+-----------------------------------------------------------------------------
+Bandwidthd needs to be configured manually. This is done in
+/etc/bandwidthd/bandwidthd.conf which is pretty self-explaning and also has
+helpful comments. Theres always "man bandwidthd.conf" too.
+You should have atleast one "subnet" declaration and "dev".
+
+
+Choosing package:
+-----------------------------------------------------------------------------
+As of 2.0.1+cvs20050208-2 the bandwidthd source now produces two packages when
+built. The "bandwidthd" package is the traditional bandwidthd from the 1.x
+branch. It tracks the traffic and generates static html and graphs.
+The new package "bandwidthd-pgsql" is the newly introduced alternative method in
+2.x where you can have multiple "sensors" (bandwidthd which only collect
+statistics without writing any graphs) and sends it in to a central PostgreSQL
+database. The data from the PostgreSQL database is presented via a dynamic
+PHP-based web-interface instead of static html pages.
+I suggest not using "bandwidthd-pgsql" unless you really need multiple sensors
+support, are confortable with PostgreSQL and hacking PHP.
+
+
+Defunct bandwidthd processes:
+-----------------------------------------------------------------------------
+Are you seeing defunct bandwidthd processes and afraid something has gone
+wrong?
+
+Having some defunct processes is perfectly normal. They are finished grapher
+children which hasn't been reaped yet. They will be reaped right before the
+next grahing run, which will produce new defunct bandwidthd processes once they
+are done graphing. This is used to detect if the previous graphing run is
+finished when a new one is started (if there aren't any children to reap,
+the current graphing run will be skipped).
+
+So unless the graphing takes very long time on your system you'll have
+defunct bandwidthd processes almost all the time when running bandwidthd.
+They aren't stuck forever though so don't worry.
+
+
+Differences between this package and the upstream source:
+-----------------------------------------------------------------------------
+- Files are NOT all in the same directory.
+	binary: /usr/sbin/bandwidthd
+	config: /etc/bandwidthd/bandwidthd.conf
+	cdf logs: /var/lib/bandwidthd/
+	webpages: /var/lib/bandwidthd/htdocs/
+	(you need to "ln -s /var/lib/bandwidthd/htdocs/ /var/www/bandwithd"
+	 if you want to make the webpages reachable via the web.)
+- writes pidfile of first process in /var/run/bandwidthd.pid
+  (Merged upstream in 2.x)
+- main process (get pid from pidfile!) collects child pids.
+  (Merged upstream in 2.x)
+- SIGTERM to main process shuts down all bandwidthd proccesses.
+  (Merged upstream in 2.x)
+- SIGHUP to main process triggers logrotate in all processes.
+  (Merged upstream in 2.x)
+- Includes manpages for bandwidthd(8) and bandwidthd.conf(5).
+  FIXME: needs updating for postgresql-options.
+- Includes init.d-script (/etc/init.d/bandwidthd) to manage bandwidthd.
+
+Changes are all to make it behave like a normal debian packaged daemon would,
+and you'll probably see more of this included by upstream in the future.
+
+

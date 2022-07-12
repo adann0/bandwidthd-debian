@@ -1,0 +1,33 @@
+.TH BANDWIDTHD 8 "5 Jul 2004"
+.SH NAME
+bandwidthd - Tracks usage of TCP/IP and builds html files with graphs.
+.SH DESCRIPTION
+.LP
+BandwidthD tracks usage of TCP/IP network subnets and builds html files with
+graphs to display utilization.
+Charts are built by individual IPs, and display utilization over 2 day, 8 day, 40 day, and 400 day periods.
+Furthermore, each ip address's utilization can be logged out at intervals of 2.5 minutes, 10 minutes, 1 hour or 12 hours in cdf format.
+HTTP, TCP, UDP, ICMP, VPN, and P2P traffic are color coded.
+.br
+.sp
+The configuration file "bandwidthd.conf" is described in it's own manual page.
+.SH FILES
+.nf
+/usr/sbin/bandwidthd			- daemon binary.
+/etc/init.d/bandwidthd			- startscript.
+/etc/bandwidthd/bandwidthd.conf	- configuration file.
+/var/run/bandwidthd.pid			- main process id file.
+/var/lib/bandwidthd/			- log directory.
+/var/lib/bandwidtd/htdocs/		- html and graphs output directory.
+.fi
+.SH SEE ALSO
+bandwidthd.conf(5)
+.br
+.sp
+Furter information available at the website:
+.br
+.I http://bandwidthd.sourceforge.net
+.SH AUTHOR
+This manual page was written by Andreas Henriksson <andreas@fatal.se>, for
+the Debian GNU/Linux system.
+

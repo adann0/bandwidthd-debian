@@ -1,0 +1,40 @@
+From: John Murphy <2.6.35.10@hotmail.com>
+Date: Sat, 20 Jul 2013 17:55:06 +0200
+Subject: Fix subnet reporting in syslog message
+
+With the following entries in etc/bandwidthd.conf, syslog shows:
+
+Feb 24 10:35:13 debian netmon: Monitoring subnet 255.0.0.0 with netmask 255.0.0.0
+Feb 24 10:35:13 debian netmon: Monitoring subnet 255.255.0.0 with netmask 255.255.0.0
+Feb 24 10:35:13 debian netmon: Monitoring subnet 255.240.0.0 with netmask 255.240.0.0
+
+It should show:
+
+Feb 24 10:46:53 debian netmon: Monitoring subnet 10.0.0.0 with netmask 255.0.0.0
+Feb 24 10:46:53 debian netmon: Monitoring subnet 192.168.0.0 with netmask 255.255.0.0
+Feb 24 10:46:53 debian netmon: Monitoring subnet 172.16.0.0 with netmask 255.240.0.0
+
+Cause:
+Bandwidthd.c calls inet_ntoa twice in a parameter list. inet_ntoa has static character buffer: second call overwrites first.
+---
+ bandwidthd.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/bandwidthd.c b/bandwidthd.c
+index bc34aa4..ab592ea 100644
+--- a/bandwidthd.c
++++ b/bandwidthd.c
+@@ -378,9 +378,12 @@ int main(int argc, char **argv)
+ 	// Log list of monitored subnets
+ 	for (Counter = 0; Counter < SubnetCount; Counter++)
+ 		{
++		char subnet[16], mask[16];
+ 		addr.s_addr = ntohl(SubnetTable[Counter].ip);
+ 		addr2.s_addr = ntohl(SubnetTable[Counter].mask);
+-		syslog(LOG_INFO, "Monitoring subnet %s with netmask %s", inet_ntoa(addr), inet_ntoa(addr2));
++		strncpy(subnet, inet_ntoa(addr), 16);
++		strncpy(mask, inet_ntoa(addr2), 16);
++		syslog(LOG_INFO, "Monitoring subnet %s with netmask %s", subnet, mask);
+ 		}
+ 
+ #ifdef HAVE_PCAP_FINDALLDEVS

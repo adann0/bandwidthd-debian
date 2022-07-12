@@ -1,0 +1,28 @@
+From: Andreas Henriksson <andreas@fatal.se>
+Date: Sat, 20 Jul 2013 18:17:14 +0200
+Subject: Add proper script header and use for loop, since echo -e is bashism.
+
+---
+ phphtdocs/bd_pgsql_purge.sh | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/phphtdocs/bd_pgsql_purge.sh b/phphtdocs/bd_pgsql_purge.sh
+index cff429f..fee133b 100755
+--- a/phphtdocs/bd_pgsql_purge.sh
++++ b/phphtdocs/bd_pgsql_purge.sh
+@@ -1,5 +1,7 @@
++#!/bin/sh
++
+ echo "SET sort_mem TO 45000;"
+-echo -e "bd_rx_log \n bd_tx_log \n bd_rx_total_log \n bd_tx_total_log" | while read TABLE; 
++for TABLE in bd_rx_log bd_tx_log bd_rx_total_log bd_tx_total_log
+ do
+ cat << EOF
+ BEGIN;
+@@ -49,4 +51,4 @@ delete from $TABLE where sample_duration < 10*60 and timestamp < now() - interva
+ COMMIT;
+ EOF
+ done
+-echo "VACUUM ANALYZE"
+\ No newline at end of file
++echo "VACUUM ANALYZE"

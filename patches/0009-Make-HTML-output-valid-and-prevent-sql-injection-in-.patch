@@ -1,0 +1,676 @@
+From: Andreas Henriksson <andreas@fatal.se>
+Date: Sat, 20 Jul 2013 18:17:14 +0200
+Subject: Make HTML output valid and prevent sql injection in php code.
+
+---
+ phphtdocs/details.php             |  72 +++++++++------
+ phphtdocs/failures.php            |  17 ++--
+ phphtdocs/footer.php              |   9 +-
+ phphtdocs/graph.php               |  32 ++++---
+ phphtdocs/header.php              |  11 ++-
+ phphtdocs/include.php             |   4 +-
+ phphtdocs/location_statistics.php |  17 ++--
+ phphtdocs/sensors.php             | 180 +++++++++++++++++++++++---------------
+ phphtdocs/signal_level.php        |  12 +--
+ phphtdocs/uptime.php              |  10 +--
+ 10 files changed, 214 insertions(+), 150 deletions(-)
+
+diff --git a/phphtdocs/details.php b/phphtdocs/details.php
+index cbdd380..17ffa28 100644
+--- a/phphtdocs/details.php
++++ b/phphtdocs/details.php
+@@ -2,19 +2,21 @@
+ include("include.php");
+ include("header.php");
+ 
+-if (isset($_GET['sensor_id']))
++if (isset($_GET['sensor_id']) && is_numeric($_GET['sensor_id']))
+     $sensor_id = $_GET['sensor_id'];
+ else
+     {
+     echo "<br>Please provide a sensor_id";
++    include('footer.php');
+     exit(1);
+     }
+ 
+ if (isset($_GET['ip']))
+-    $ip = $_GET['ip'];
++    $ip = pg_escape_string($_GET['ip']);
+ else
+     {
+     echo "<br>Please provide an ip address";
++    include('footer.php');
+     exit(1);
+     }
+                                                                                                                              
+@@ -26,7 +28,7 @@ else
+ 
+ $db = ConnectDb();
+ 
+-if ($ip == "0.0.0.0/0")
++if ($ip == pg_escape_string("0.0.0.0/0"))
+ 	{
+     $rxtable = "bd_rx_total_log";
+ 	$txtable = "bd_tx_total_log";
+@@ -62,38 +64,54 @@ group by ip) as rx
+ where tx.ip = rx.ip;";
+ //echo "</center><pre>$sql</pre><center>";exit(0);
+ $result = pg_query($sql);
+-echo "<table width=100% border=1 cellspacing=0><tr><td>Ip<td>Name<td>Total<td>Sent<td>Received<td>tcp<td>udp<td>icmp<td>http<td>p2p<td>ftp";
++?>
++
++<table width="100%" border=1 cellspacing=0>
++<tr>
++<th>Ip</th><th>Name</th>
++<th>Total</th><th>Sent</th><th>Received</th>
++<th>tcp</th><th>udp</th><th>icmp</th>
++<th>http</th><th>p2p</th><th>ftp</th>
++</tr>
++
++<?php
++
+ $r = pg_fetch_array($result);
++
+ echo "<tr><td>";
+ if (strpos($ip, "/") === FALSE)
+-	echo "$ip<td>".gethostbyaddr($ip);
++	echo "$ip</td><td>".gethostbyaddr($ip) . "</td>";
+ else
+-	echo "Total<td>$ip";
++	echo "Total</td><td>$ip</td>";
++
+ echo fmtb($r['total']).fmtb($r['sent']).fmtb($r['received']).
+ 	fmtb($r['tcp']).fmtb($r['udp']).fmtb($r['icmp']).fmtb($r['http']).
+     fmtb($r['p2p']).fmtb($r['ftp']);
+-echo "</table></center>";
++echo "</table>";
++
++echo "<center><h3>Daily</h3></center>";
++echo "Send:<br><img src=\"graph.php?ip=$ip&amp;sensor_id=".$sensor_id."&amp;table=$txtable&amp;yscale=".(max($r['txscale'], $r['rxscale']))."\"><br>";
++echo '<img src="legend.gif"><br>';
++echo "Receive:<br><img src=\"graph.php?ip=$ip&amp;sensor_id=".$sensor_id."&amp;table=$rxtable&amp;yscale=".(max($r['txscale'], $r['rxscale']))."\"><br>";
++echo '<img src="legend.gif"><br>';
+ 
+-echo "<center><h4>Daily</h4></center>";
+-echo "Send:<br><img src=graph.php?ip=$ip&sensor_id=".$sensor_id."&table=$txtable&yscale=".(max($r['txscale'], $r['rxscale']))."><br>";
+-echo "<img src=legend.gif><br>";
+-echo "Receive:<br><img src=graph.php?ip=$ip&sensor_id=".$sensor_id."&table=$rxtable&yscale=".(max($r['txscale'], $r['rxscale']))."><br>";
+-echo "<img src=legend.gif><br>";
++echo "<center><h3>Weekly</h3></center>";
++echo "Send:<br><img src=\"graph.php?interval=".INT_WEEKLY."&amp;ip=$ip&amp;sensor_id=$sensor_id&amp;table=$txtable&amp;yscale=".(max($r['txscale'], $r['rxscale']))."\"><br>";
++echo '<img src="legend.gif"><br>';
++echo "Receive:<br><img src=\"graph.php?interval=".INT_WEEKLY."&amp;ip=$ip&amp;sensor_id=$sensor_id&amp;table=$rxtable&amp;yscale=".(max($r['txscale'], $r['rxscale']))."\"><br>";
++echo '<img src="legend.gif"><br>';
+ 
+-echo "<center><h4>Weekly</h4></center>";
+-echo "Send:<br><img src=graph.php?interval=".INT_WEEKLY."&ip=$ip&sensor_id=$sensor_id&table=$txtable&yscale=".(max($r['txscale'], $r['rxscale']))."><br>";
+-echo "<img src=legend.gif><br>";
+-echo "Receive:<br><img src=graph.php?interval=".INT_WEEKLY."&ip=$ip&sensor_id=$sensor_id&table=$rxtable&yscale=".(max($r['txscale'], $r['rxscale']))."><br>";
+-echo "<img src=legend.gif><br>";
++echo "<center><h3>Monthly</h3></center>";
++echo "Send:<br><img src=\"graph.php?interval=".INT_MONTHLY."&amp;ip=$ip&amp;sensor_id=$sensor_id&amp;table=$txtable&amp;yscale=".(max($r['txscale'], $r['rxscale']))."\"><br>";
++echo '<img src="legend.gif"><br>';
++echo "Receive:<br><img src=\"graph.php?interval=".INT_MONTHLY."&amp;ip=$ip&amp;sensor_id=$sensor_id&amp;table=$rxtable&amp;yscale=".(max($r['txscale'], $r['rxscale']))."\"><br>";
++echo '<img src="legend.gif"><br>';
+ 
+-echo "<center><h4>Monthly</h4></center>";
+-echo "Send:<br><img src=graph.php?interval=".INT_MONTHLY."&ip=$ip&sensor_id=$sensor_id&table=$txtable&yscale=".(max($r['txscale'], $r['rxscale']))."><br>";
+-echo "<img src=legend.gif><br>";
+-echo "Receive:<br><img src=graph.php?interval=".INT_MONTHLY."&ip=$ip&sensor_id=$sensor_id&table=$rxtable&yscale=".(max($r['txscale'], $r['rxscale']))."><br>";
+-echo "<img src=legend.gif><br>";
++echo "<center><h3>Yearly</h3></center>";
++echo "Send:<br><img src=\"graph.php?interval=".INT_YEARLY."&amp;ip=$ip&amp;sensor_id=$sensor_id&amp;table=$txtable&amp;yscale=".(max($r['txscale'], $r['rxscale']))."\"><br>";
++echo '<img src="legend.gif"><br>';
++echo "Receive:<br><img src=\"graph.php?interval=".INT_YEARLY."&amp;ip=$ip&amp;sensor_id=$sensor_id&amp;table=$rxtable&amp;yscale=".(max($r['txscale'], $r['rxscale']))."\"><br>";
++echo '<img src="legend.gif"><br>';
+ 
+-echo "<center><h4>Yearly</h4></center>";
+-echo "Send:<br><img src=graph.php?interval=".INT_YEARLY."&ip=$ip&sensor_id=$sensor_id&table=$txtable&yscale=".(max($r['txscale'], $r['rxscale']))."><br>";
+-echo "<img src=legend.gif><br>";
+-echo "Receive:<br><img src=graph.php?interval=".INT_YEARLY."&ip=$ip&sensor_id=$sensor_id&table=$rxtable&yscale=".(max($r['txscale'], $r['rxscale']))."><br>";
+-echo "<img src=legend.gif><br>";
+\ No newline at end of file
++include('footer.php');
++?>
+diff --git a/phphtdocs/failures.php b/phphtdocs/failures.php
+index c02dd49..b8339d2 100755
+--- a/phphtdocs/failures.php
++++ b/phphtdocs/failures.php
+@@ -1,5 +1,7 @@
+ <?
+ include("include.php");
++$subtitle = "Failure Report";
++include("header.php");
+ 
+ $db = ConnectDb();
+ 
+@@ -11,15 +13,7 @@ if ($HTTP_GET_VARS['reset_links'] != "")
+ 	header("Location: $PHP_SELF");
+ 	}
+ ?>
+-<HTML>
+-<HEAD>
+-<TITLE>Failure Report</TITLE>
+-<link href="bandwidthd.css" rel="stylesheet" type="text/css">
+-</HEAD>
+-<BODY>
+-<?
+-include("header.php");
+-?>
++
+ <h3>Failed Routers</h3>
+ <?
+ $res = pg_query("
+@@ -105,5 +99,8 @@ else
+     	}
+ 	echo "</TABLE>";
+ 	}
++
++include("footer.php");
+ ?>
+-</BODY>
+\ No newline at end of file
++
++
+diff --git a/phphtdocs/footer.php b/phphtdocs/footer.php
+index 2986e81..2cae931 100644
+--- a/phphtdocs/footer.php
++++ b/phphtdocs/footer.php
+@@ -1,3 +1,6 @@
+-<?
+-echo("Page load completed in ". (time() - $starttime) ." seconds"); 
+-?>
+\ No newline at end of file
++<?php
++echo("<p>Page load completed in ". (time() - $starttime) ." seconds</p>"); 
++?>
++
++</BODY>
++</HTML>
+diff --git a/phphtdocs/graph.php b/phphtdocs/graph.php
+index 545f079..59a77d8 100644
+--- a/phphtdocs/graph.php
++++ b/phphtdocs/graph.php
+@@ -1,4 +1,4 @@
+-<?
++<?php
+ require("include.php");
+ 
+ // Returns x location of any given timestamp
+@@ -59,17 +59,17 @@ $db = ConnectDb();
+ 
+ // Get parameters
+ 
+-if (isset($_GET['width']))
++if (isset($_GET['width']) && is_numeric($_GET['width']))
+     $width = $_GET['width'];
+ else
+ 	$width = DFLT_WIDTH;
+ 
+-if (isset($_GET['height']))
++if (isset($_GET['height']) && is_numeric($_GET['height']))
+     $height = $_GET['height'];
+ else
+ 	$height = DFLT_HEIGHT;
+ 
+-if (isset($_GET['interval']))
++if (isset($_GET['interval']) && is_numeric($_GET['interval']))
+     $interval = $_GET['interval'];
+ else
+ 	$interval = DFLT_INTERVAL;
+@@ -79,24 +79,32 @@ if (isset($_GET['ip']))
+     $ip = $_GET['ip'];
+ 	#optionall call using underscore instead of slash to seperate subnet from bits
+ 	$ip = str_replace("_", "/", $ip);
++    $ip = pg_escape_string($ip);
+ 	}
+ else
+ 	exit(1);
+ 
+-if (isset($_GET['sensor_id']))
++if (isset($_GET['sensor_id']) && is_numeric($_GET['sensor_id']))
+ 	$sensor_id = $_GET['sensor_id'];
+ else
+ 	exit(1);
+ 
+-if (isset($_GET['timestamp']))
++if (isset($_GET['timestamp']) && is_numeric($_GET['timestamp']))
+     $timestamp = $_GET['timestamp'];
+ else
+ 	$timestamp = time() - $interval + (0.05*$interval);
+ 
+-if (isset($_GET['table']))
+-    $table = $_GET['table'];
+-else
+-	$table = "bd_rx_log";
++switch ($_GET['table']) {
++    case 'bd_rx_total_log':
++    case 'bd_tx_total_log':
++    case 'bd_rx_log':
++    case 'bd_tx_log':
++        $table = $_GET['table'];
++    break;
++	default: /* invalid value in table argument! */
++        exit(1);
++    break;
++}
+ 
+ if (isset($_GET['yscale']))
+     $yscale = $_GET['yscale'];
+@@ -490,4 +498,6 @@ while ($YTic <= ($YMax - $YMax/$YMarks))
+ 	}
+ 
+ imagepng($im); 
+-imagedestroy($im);
+\ No newline at end of file
++imagedestroy($im);
++
++?>
+diff --git a/phphtdocs/header.php b/phphtdocs/header.php
+index beac09f..46dda3e 100644
+--- a/phphtdocs/header.php
++++ b/phphtdocs/header.php
+@@ -1,3 +1,12 @@
++<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TS/html4/loose.dtd">
+ <html>
++<HEAD>
++<TITLE>BandwidthD<?php if (isset($subtitle)) { echo ' - ' . $subtitle; } ?></TITLE>
++<link href="bandwidthd.css" rel="stylesheet" type="text/css">
++</HEAD>
++
++<BODY>
+ <center>
+-<img src=logo.gif>
++<img src="logo.gif" alt="BandwidthD Logo">
++</center>
++
+diff --git a/phphtdocs/include.php b/phphtdocs/include.php
+index 81d8e1d..688b9fc 100644
+--- a/phphtdocs/include.php
++++ b/phphtdocs/include.php
+@@ -60,9 +60,9 @@ function fmtb($kbytes)
+ 		$Suffix = 'T';
+ 		}
+ 
+-	return(sprintf("<td align=right><tt>%.1f%s</td>", $Output, $Suffix));
++	return(sprintf("<td align=right><tt>%.1f%s</tt></td>", $Output, $Suffix));
+ 	}
+ 
+ $starttime = time();
+ set_time_limit(300);
+-?>
+\ No newline at end of file
++?>
+diff --git a/phphtdocs/location_statistics.php b/phphtdocs/location_statistics.php
+index 59d604e..c34041b 100755
+--- a/phphtdocs/location_statistics.php
++++ b/phphtdocs/location_statistics.php
+@@ -1,14 +1,9 @@
+-<HEAD>
+-<TITLE>Location Statistics</TITLE>
+-</HEAD>
+ <?
+ include("include.php");
++$subtitle = "Location Statistics";
+ include("header.php");
+-?></CENTER>
+-<HEAD>
+-<link href="bandwidthd.css" rel="stylesheet" type="text/css">
+-</head>
+-<center><img src=legend.gif></center>
++?>
++<center><img src="legend.gif"></center>
+ <?
+ $db = ConnectDb();
+ 
+@@ -93,4 +88,8 @@ while ($sensor = @pg_fetch_array($sensors))
+ <BR>
+ <BR>
+ <BR>
+-<BR>
+\ No newline at end of file
++<BR>
++
++<?php
++include("footer.php");
++?>
+diff --git a/phphtdocs/sensors.php b/phphtdocs/sensors.php
+index 2593c86..5abafc6 100755
+--- a/phphtdocs/sensors.php
++++ b/phphtdocs/sensors.php
+@@ -1,34 +1,35 @@
+-<?
++<?php
+ include("include.php");
++$subtitle = "Sensors";
+ include("header.php");
+ 
+ // Get variables from url
+ 
+-if (isset($_GET['sensor_id']) && $_GET['sensor_id'] != "none")
++if (isset($_GET['sensor_id']) && is_numeric($_GET['sensor_id']))
+     $sensor_id = $_GET['sensor_id'];
+ 
+-if (isset($_GET['interval']) && $_GET['interval'] != "none")
++if (isset($_GET['interval']) && is_numeric($_GET['interval']))
+     $interval = $_GET['interval'];
+ 
+-if (isset($_GET['timestamp']) && $_GET['timestamp'] != "none")
++if (isset($_GET['timestamp']) && is_numeric($_GET['timestamp']))
+     $timestamp = $_GET['timestamp'];
+ 
+-if (isset($_GET['subnet']) && $_GET['subnet'] != "none")
+-    $subnet = $_GET['subnet'];
++if (isset($_GET['subnet']) && $_GET['subnet'] != "none" && $_GET['subnet'] != "" )
++    $subnet = pg_escape_string($_GET['subnet']);
+ 
+-if (isset($_GET['limit']) && $_GET['limit'] != "none")
++if (isset($_GET['limit']) && ($_GET['limit'] == "all" || is_numeric($_GET['limit'])))
+ 	$limit = $_GET['limit'];
+ 
++$graphs = false;
+ if (isset($_GET['graphs']))
+-	$graphs = $_GET['graphs'];
++	$graphs = true;
+ 
+ $db = ConnectDb();
+ ?>
+-<HEAD>
+-<link href="bandwidthd.css" rel="stylesheet" type="text/css">
+-</head>
+-<FORM name="navigation" method=get action=<?=$PHP_SELF?>>
+-<table width=100% cellspacing=0 cellpadding=5 border=1>
++
++<FORM name="navigation" method=get action="<?=$_SERVER['PHP_SELF']?>">
++
++<table width="100%" cellspacing=0 cellpadding=5 border=1>
+ <tr>
+ <td>
+ <?
+@@ -37,42 +38,65 @@ $result = @pg_query($sql);
+ if (!$result)
+ 	{
+ 	echo "<center>Collecting data...</center>";
+-	exit;
++	include('footer.php');
++	exit();
+ 	}
+ ?>
++
+ <SELECT name="sensor_id">
+-<OPTION value="none">--Select A Sensor--
+-<?
+-while ($r = pg_fetch_array($result))
+-    echo "<option value=\"".$r['sensor_id']."\" ".($sensor_id==$r['sensor_id']?"SELECTED":"").">".$r['sensor_name']." - ".$r['interface']."\n";
++<OPTION value="none">--Select A Sensor--</OPTION>
++<?php
++while ($r = pg_fetch_array($result)) {
++    echo '<OPTION value="' . $r['sensor_id'] .'" '
++        . ($sensor_id==$r['sensor_id']?"SELECTED":"") . '>'
++        . $r['sensor_name'] . ' - ' . $r['interface'] . "</OPTION>\n";
++}
+ ?>
+ </SELECT>
+-<td><SELECT name="interval">
+-<OPTION value="none">--Select An Interval--
+-<OPTION value=<?=INT_DAILY?> <?=$interval==INT_DAILY?"SELECTED":""?>>Daily
+-<OPTION value=<?=INT_WEEKLY?> <?=$interval==INT_WEEKLY?"SELECTED":""?>>Weekly
+-<OPTION value=<?=INT_MONTHLY?> <?=$interval==INT_MONTHLY?"SELECTED":""?>>Monthly
+-<OPTION value=<?=INT_YEARLY?> <?=$interval==INT_YEARLY?"SELECTED":""?>>Yearly
+-<OPTION value=<?=24*60*60?> <?=$interval==24*60*60?"SELECTED":""?>>24hrs
+-<OPTION value=<?=30*24*60*60?> <?=$interval==30*24*60*60?"SELECTED":""?>>30days
++
++</td>
++<td>
++
++<SELECT name="interval">
++<OPTION value="none">--Select An Interval--</OPTION>
++<OPTION value=<?=INT_DAILY?> <?=$interval==INT_DAILY?"SELECTED":""?>>Daily</OPTION>
++<OPTION value=<?=INT_WEEKLY?> <?=$interval==INT_WEEKLY?"SELECTED":""?>>Weekly</OPTION>
++<OPTION value=<?=INT_MONTHLY?> <?=$interval==INT_MONTHLY?"SELECTED":""?>>Monthly</OPTION>
++<OPTION value=<?=INT_YEARLY?> <?=$interval==INT_YEARLY?"SELECTED":""?>>Yearly</OPTION>
++<OPTION value=<?=24*60*60?> <?=$interval==24*60*60?"SELECTED":""?>>24hrs</OPTION>
++<OPTION value=<?=30*24*60*60?> <?=$interval==30*24*60*60?"SELECTED":""?>>30days</OPTION>
+ </select>
+ 
+-<td><SELECT name="limit">
+-<OPTION value="none">--How Many Results--
+-<OPTION value=20 <?=$limit==20?"SELECTED":""?>>20
+-<OPTION value=50 <?=$limit==50?"SELECTED":""?>>50
+-<OPTION value=100 <?=$limit==100?"SELECTED":""?>>100
+-<OPTION value=all <?=$limit=="all"?"SELECTED":""?>>All
++</td>
++<td>
++
++<SELECT name="limit">
++<OPTION value="none">--How Many Results--</OPTION>
++<OPTION value=20 <?=$limit==20?"SELECTED":""?>>20</OPTION>
++<OPTION value=50 <?=$limit==50?"SELECTED":""?>>50</OPTION>
++<OPTION value=100 <?=$limit==100?"SELECTED":""?>>100</OPTION>
++<OPTION value=all <?=$limit=="all"?"SELECTED":""?>>All</OPTION>
+ </select>
+ 
+-<? if ($graphs != "") $GraphsChecked = "Checked"; else $GraphsChecked = ""; ?>
+-<td><input type="checkbox" name="graphs" <?=$GraphsChecked?>>Display Graphs</a>
++</td>
++<td>
++
++<?php if ($graphs) $GraphsChecked = "CHECKED"; else $GraphsChecked = ""; ?>
++<input type="checkbox" name="graphs" <?=$GraphsChecked?>>Display Graphs
+ 
+-<td>Subnet Filter:<input name=subnet value="<?=isset($subnet)?$subnet:"0.0.0.0/0"?>"> 
++</td>
++<td>
++
++Subnet Filter:<input name=subnet value="<?=isset($subnet)?$subnet:"0.0.0.0/0"?>"> 
+ <input type=submit value="Go">
++
++</td>
++</tr>
++
+ </table>
+ </FORM>
+-<?
++
++<?php
+ // Set defaults
+ if (!isset($interval))
+ 	$interval = DFLT_INTERVAL;
+@@ -84,10 +108,12 @@ if (!isset($limit))
+ 	$limit = 20;
+ 
+ // Validation
+-if (!isset($sensor_id))
+-	exit(0);
++if (!isset($sensor_id)) {
++	include('footer.php');
++	exit();
++}
+ 
+-$sql = "SELECT sensor_name, interface, sensor_id from sensors where sensor_id = $sensor_id;";
++$sql = "SELECT sensor_name, interface, sensor_id FROM sensors WHERE sensor_id = '$sensor_id';";
+ $result = @pg_query($sql);
+ $r = pg_fetch_array($result);
+ $sensor_name = $r['sensor_name'];
+@@ -133,7 +159,6 @@ group by ip) as rx
+ where tx.ip = rx.ip
+ order by total desc;";
+ 
+-//echo "</center><pre>$sql</pre><center>"; exit(0);
+ pg_query("SET sort_mem TO 30000;");
+ 
+ pg_send_query($db, $sql);
+@@ -156,18 +181,28 @@ pg_query("set sort_mem to default;");
+ if ($limit == "all")
+ 	$limit = pg_num_rows($result);
+ 
+-echo "<a name=top><table width=100% border=1 cellspacing=0><tr><td>Ip<td>Name<td>Total<td>Sent<td>Received<td>tcp<td>udp<td>icmp<td>http<td>mail<td>p2p<td>ftp";
++?>
++
++<a name="top"></a>
++<table width="100%" border=1 cellspacing=0>
++<tr>
++<th>Ip</th><th>Name</th>
++<th>Total</th><th>Sent</th><th>Received</th>
++<th>tcp</th><th>udp</th><th>icmp</th>
++<th>http</th><th>mail</th><th>p2p</th><th>ftp</th>
++</tr>
+ 
++<?php
+ if (!isset($subnet)) // Set this now for total graphs
+ 	$subnet = "0.0.0.0/0";
+ 
+ // Output Total Line
+-if ($graphs == "")
+-	$url = "<a href=# onclick=\"window.open('details.php?sensor_id=$sensor_id&ip=$subnet','_blank', 'scrollbars=yes,width=930,height=768,resizable=yes,left=20,top=20')\">";
++if (!$graphs)
++	$url = "<a href=\"#\" onclick=\"window.open('details.php?sensor_id=$sensor_id&amp;ip=$subnet','_blank', 'scrollbars=yes,width=930,height=768,resizable=yes,left=20,top=20')\">";
+ else
+-	$url = "<a href=#Total>";
++	$url = '<a href="#Total">';
+ 
+-echo "\n<TR><TD>".$url."Total</a><TD>$subnet";
++echo "<TR><TD>".$url."Total</a></TD><TD>$subnet</TD>";
+ foreach (array("total", "sent", "received", "tcp", "udp", "icmp", "http", "mail", "p2p", "ftp") as $key)
+ 	{
+ 	for($Counter=0, $Total = 0; $Counter < pg_num_rows($result); $Counter++)
+@@ -183,22 +218,22 @@ echo "\n";
+ for($Counter=0; $Counter < pg_num_rows($result) && $Counter < $limit; $Counter++)
+ 	{
+ 	$r = pg_fetch_array($result, $Counter);
+-	if ($graphs == "")
+-		$url = "<a href=# onclick=\"window.open('details.php?sensor_id=$sensor_id&ip=".$r['ip']."','_blank', 'scrollbars=yes,width=930,height=768,resizable=yes,left=20,top=20')\">";
++	if (!$graphs)
++		$url = "<a href=\"#\" onclick=\"window.open('details.php?sensor_id=$sensor_id&amp;ip=".$r['ip']."','_blank', 'scrollbars=yes,width=930,height=768,resizable=yes,left=20,top=20')\">";
+ 	else
+-		$url = "<a href=#".$r['ip'].">";
+-	echo "<tr><td>".$url;
+-	echo $r['ip']."<td>".gethostbyaddr($r['ip']);
+-	echo "</a>";
++		$url = '<a href="#' . $r['ip'] . '">';
++	echo "<tr><td>" . $url . $r['ip'] . "</a></td><td>" . gethostbyaddr($r['ip']) . "</td>";
+ 	echo fmtb($r['total']).fmtb($r['sent']).fmtb($r['received']).
+ 		fmtb($r['tcp']).fmtb($r['udp']).fmtb($r['icmp']).fmtb($r['http']).fmtb($r['mail']).
+-		fmtb($r['p2p']).fmtb($r['ftp'])."\n";
++		fmtb($r['p2p']).fmtb($r['ftp'])."</tr>\n";
+ 	}
+-echo "</table></center>";
++echo "</table>";
+ 
+ // Stop here
+-if ($graphs == "")
++if (!$graphs) {
++	include('footer.php');
+ 	exit();
++}
+ 
+ // Output Total Graph
+ for($Counter=0, $Total = 0; $Counter < pg_num_rows($result); $Counter++)
+@@ -215,34 +250,35 @@ else
+ 
+ $sn = str_replace("/", "_", $subnet);
+ 
+-echo "<a name=Total><h3><a href=details.php?sensor_id=$sensor_id&ip=$subnet>";
+-echo "Total - Total of $subnet</h3>";
+-echo "</a>";
+-echo "Send:<br><img src=graph.php?ip=$sn&interval=$interval&sensor_id=".$sensor_id."&table=$total_table><br>";
+-echo "<img src=legend.gif><br>\n";
++echo "<h3><a name=\"Total\"></a><a href=\"details.php?sensor_id=$sensor_id&amp;ip=$subnet\">";
++echo "Total - Total of $subnet</a></h3>";
++echo "Send:<br><img src=\"graph.php?ip=$sn&amp;interval=$interval&amp;sensor_id=".$sensor_id."&amp;table=$total_table\"><br>";
++echo '<img src="legend.gif"><br>' . "\n";
+ if ($subnet == "0.0.0.0/0")
+ 	$total_table = "bd_rx_total_log";
+ else
+ 	$total_table = "bd_rx_log";
+-echo "Receive:<br><img src=graph.php?ip=$sn&interval=$interval&sensor_id=".$sensor_id."&table=$total_table><br>";
+-echo "<img src=legend.gif><br>\n";
+-echo "<a href=#top>[Return to Top]</a>";
++echo "Receive:<br><img src=\"graph.php?ip=$sn&amp;interval=$interval&amp;sensor_id=".$sensor_id."&amp;table=$total_table\"><br>";
++echo '<img src="legend.gif"><br>' . "\n";
++echo '<a href="#top">[Return to Top]</a>';
+ 
+ // Output Other Graphs
+ for($Counter=0; $Counter < pg_num_rows($result) && $Counter < $limit; $Counter++) 
+ 	{
+ 	$r = pg_fetch_array($result, $Counter);
+-	echo "<a name=".$r['ip']."><h3><a href=details.php?sensor_id=$sensor_id&ip=".$r['ip'].">";
++	echo "<h3><a name=".$r['ip']."></a><a href=\"details.php?sensor_id=$sensor_id&amp;ip=".$r['ip']."\">";
+ 	if ($r['ip'] == "0.0.0.0")
+-		echo "Total - Total of all subnets</h3>";
++		echo "Total - Total of all subnets";
+ 	else
+-		echo $r['ip']." - ".gethostbyaddr($r['ip'])."</h3>";
+-	echo "</a>";
+-	echo "Send:<br><img src=graph.php?ip=".$r['ip']."&interval=$interval&sensor_id=".$sensor_id."&table=bd_tx_log&yscale=".(max($r['txscale'], $r['rxscale']))."><br>";
+-	echo "<img src=legend.gif><br>\n";
+-	echo "Receive:<br><img src=graph.php?ip=".$r['ip']."&interval=$interval&sensor_id=".$sensor_id."&table=bd_rx_log&yscale=".(max($r['txscale'], $r['rxscale']))."><br>";
+-	echo "<img src=legend.gif><br>\n";
+-	echo "<a href=#top>[Return to Top]</a>";
++		echo $r['ip']." - ".gethostbyaddr($r['ip']);
++	echo "</a></h3>";
++	echo "Send:<br><img src=\"graph.php?ip=".$r['ip']."&amp;interval=$interval&amp;sensor_id=".$sensor_id."&amp;table=bd_tx_log&amp;yscale=".(max($r['txscale'], $r['rxscale']))."\"><br>";
++	echo '<img src="legend.gif"><br>' . "\n";
++	echo "Receive:<br><img src=\"graph.php?ip=".$r['ip']."&amp;interval=$interval&amp;sensor_id=".$sensor_id."&amp;table=bd_rx_log&amp;yscale=".(max($r['txscale'], $r['rxscale']))."\"><br>";
++	echo '<img src="legend.gif"><br>' . "\n";
++	echo '<a href="#top">[Return to Top]</a>';
+ 	}
+ 
+-include('footer.php');
+\ No newline at end of file
++
++include('footer.php');
++?>
+diff --git a/phphtdocs/signal_level.php b/phphtdocs/signal_level.php
+index c78ec23..e236389 100755
+--- a/phphtdocs/signal_level.php
++++ b/phphtdocs/signal_level.php
+@@ -1,11 +1,6 @@
+-<HTML>
+-<HEAD>
+-<TITLE>Signal Level Report</TITLE>
+-<link href="bandwidthd.css" rel="stylesheet" type="text/css">
+-</HEAD>
+-<BODY>
+-<?
++<?php
+ include("include.php");
++$subtitle = "Signal Level Report";
+ include("header.php");
+ 
+ $db = ConnectDb();
+@@ -49,5 +44,6 @@ else
+     	}
+ 	echo "</TABLE>";
+ 	}
++
++include("footer.php");
+ ?>
+-</BODY>
+\ No newline at end of file
+diff --git a/phphtdocs/uptime.php b/phphtdocs/uptime.php
+index 6ed928c..0d11e1d 100755
+--- a/phphtdocs/uptime.php
++++ b/phphtdocs/uptime.php
+@@ -1,11 +1,6 @@
+-<HTML>
+-<HEAD>
+-<TITLE>Uptime Report</TITLE>
+-<link href="bandwidthd.css" rel="stylesheet" type="text/css">
+-</HEAD>
+-<BODY>
+ <?
+ include("include.php");
++$subtitle = "Uptime Report";
+ include("header.php");
+ 
+ $db = ConnectDb();
+@@ -37,5 +32,6 @@ else
+     	}
+ 	echo "</TABLE>";
+ 	}
++
++include("footer.php");
+ ?>
+-</BODY>
+\ No newline at end of file

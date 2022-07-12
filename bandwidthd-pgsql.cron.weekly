@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# psql will include database connection info from ~/.pgpass
+HOME=/etc/bandwidthd/
+
+# summarize data collected by bandwidthd in database.
+/usr/sbin/bd_pgsql_purge.sh | psql

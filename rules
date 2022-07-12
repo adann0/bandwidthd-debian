@@ -1,0 +1,182 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# GNU copyright 1997 to 1999 by Joey Hess.
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+configureoptions = --bindir=/usr/sbin/ --sysconfdir=/etc/bandwidthd/ --localstatedir=/var/lib/
+
+p_bwdstatic = bandwidthd
+p_bwdpgsql = bandwidthd-pgsql
+
+build_bwdstatic = debian/bandwidthd
+build_bwdpgsql = debian/bandwidthd-pgsql
+
+
+CFLAGS = -Wall
+
+ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -g
+endif
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O2
+endif
+
+configure:
+
+configure-bwdstatic: configure-bwdstatic-stamp
+
+configure-bwdstatic-stamp:
+	dh_testdir
+	#[ ! -f Makefile ] || $(MAKE) clean
+	cp -f /usr/share/misc/config.guess config.guess
+	cp -f /usr/share/misc/config.sub config.sub
+	dh_autoreconf
+	chmod +x configure
+	INSTALL='install --strip-program=true' dh_auto_configure -- $(configureoptions) --disable-pgsql
+	touch $@
+	
+configure-bwdpgsql: configure-bwdpgsql-stamp
+
+configure-bwdpgsql-stamp: 
+	dh_testdir
+	#[ ! -f Makefile ] || $(MAKE) clean
+	[ ! -f /usr/share/misc/config.guess ] || cp -f /usr/share/misc/config.guess config.guess
+	[ ! -f /usr/share/misc/config.sub ] || cp -f /usr/share/misc/config.sub config.sub
+	chmod +x configure
+	INSTALL='install --strip-program=true' dh_auto_configure -- $(configureoptions) --enable-pgsql
+	touch $@
+
+
+build:
+
+build-bwdstatic: configure-bwdstatic build-stamp
+build-bwdpgsql: configure-bwdpgsql build-stamp
+
+build-stamp:
+	dh_testdir
+
+	# Add here commands to compile the package.
+	$(MAKE)
+
+	touch $@
+
+
+clean:
+	dh_testdir
+	dh_testroot
+	debconf-updatepo # update debian/po/templates.pot
+	[ ! -f Makefile ] || $(MAKE) distclean
+	dh_autoreconf_clean
+	rm -f build-stamp configure-stamp
+	rm -f config.guess config.sub
+	rm -f configure-*-stamp
+	rm -f conf.l.* conf.tab.*
+	rm -f config.log config.h config.status
+	dh_clean
+
+install:
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
+	$(MAKE) -f debian/rules install-bwdstatic
+	$(MAKE) clean
+	$(MAKE) -f debian/rules install-bwdpgsql
+
+install-bwdstatic: DH_OPTIONS=-p$(p_bwdstatic)
+install-bwdstatic: build-bwdstatic
+	# Add here commands to install the package into debian/bandwidthd.
+	$(MAKE) install DESTDIR=$(CURDIR)/$(build_bwdstatic)
+	# install bandwidthd.conf template
+	mkdir -p debian/bandwidthd/usr/share/bandwidthd/
+	install -m 644 -o root -g root debian/extras/bandwidthd.conf.template \
+		debian/bandwidthd/usr/share/bandwidthd/
+	# install apache2 config
+	mkdir -p debian/bandwidthd/etc/apache2/conf-available/
+	install -m 644 -o root -g root debian/extras/apache2.conf \
+		debian/bandwidthd/etc/apache2/conf-available/bandwidthd.conf
+	# Install debconf files for bandwidthd
+	dh_installdebconf --mainpackage=$(p_bwdstatic)
+	# Install init.d script for bandwidthd
+	dh_installinit --name=bandwidthd --mainpackage=$(p_bwdstatic)
+	# Install manpages for bandwidthd
+	dh_installman --mainpackage=$(p_bwdstatic)
+
+
+install-bwdpgsql: DH_OPTIONS=-p$(p_bwdpgsql)
+install-bwdpgsql: build-bwdpgsql
+	# Add here commands to install the package into debian/bandwidthd-pgsql.
+	$(MAKE) install DESTDIR=$(CURDIR)/$(build_bwdpgsql)
+	# install summarizer script
+	install -m 644 phphtdocs/bd_pgsql_purge.sh debian/bandwidthd-pgsql/usr/sbin/bd_pgsql_purge
+	# install web-interface.
+	install -m 644 phphtdocs/bandwidthd.css debian/bandwidthd-pgsql/var/lib/bandwidthd/htdocs/
+	install -m 644 phphtdocs/*.gif debian/bandwidthd-pgsql/var/lib/bandwidthd/htdocs/
+	# ... but only a subset of the php files (the ones that are useful).
+	install -m 644 phphtdocs/details.php debian/bandwidthd-pgsql/var/lib/bandwidthd/htdocs/
+	install -m 644 phphtdocs/failures.php debian/bandwidthd-pgsql/var/lib/bandwidthd/htdocs/
+	install -m 644 phphtdocs/footer.php debian/bandwidthd-pgsql/var/lib/bandwidthd/htdocs/
+	install -m 644 phphtdocs/graph.php debian/bandwidthd-pgsql/var/lib/bandwidthd/htdocs/
+	install -m 644 phphtdocs/header.php debian/bandwidthd-pgsql/var/lib/bandwidthd/htdocs/
+	install -m 644 phphtdocs/include.php debian/bandwidthd-pgsql/var/lib/bandwidthd/htdocs/
+	install -m 644 phphtdocs/location_statistics.php debian/bandwidthd-pgsql/var/lib/bandwidthd/htdocs/
+	install -m 644 phphtdocs/sensors.php debian/bandwidthd-pgsql/var/lib/bandwidthd/htdocs/
+	#install -m 644 phphtdocs/uptime.php debian/bandwidthd-pgsql/var/lib/bandwidthd/htdocs/
+
+	# install postgresql-connection config, webgroup-readable.
+	mkdir -p debian/bandwidthd-pgsql/var/lib/bandwidthd/htdocs/
+	install -m 640 -g www-data phphtdocs/config.conf \
+		debian/bandwidthd-pgsql/var/lib/bandwidthd/htdocs/config.conf
+	# install shell scripts in document-directory.
+	mkdir -p debian/bandwidthd-pgsql/usr/share/doc/bandwidthd-pgsql/
+	install -m 755 phphtdocs/*.sh \
+		debian/bandwidthd-pgsql/usr/share/doc/bandwidthd-pgsql/
+	# install bandwidthd-pgsql.conf template
+	mkdir -p debian/bandwidthd-pgsql/usr/share/bandwidthd-pgsql/
+	install -m 644 -o root -g root debian/extras/bandwidthd-pgsql.conf.template \
+		debian/bandwidthd-pgsql/usr/share/bandwidthd-pgsql/
+	# install apache2 config
+	mkdir -p debian/bandwidthd-pgsql/etc/apache2/conf-available/
+	install -m 644 -o root -g root debian/extras/apache2.conf \
+		debian/bandwidthd-pgsql/etc/apache2/conf-available/bandwidthd.conf
+	# Install debconf files for bandwidthd-pgsql
+	dh_installdebconf --mainpackage=$(p_bwdpgsql)
+	# Install init.d script for bandwidthd-pgsql
+	dh_installinit --name=bandwidthd --mainpackage=$(p_bwdpgsql)
+	# Install manpages for bandwidthd-pgsql
+	dh_installman --mainpackage=$(p_bwdpgsql)
+
+
+build-arch: build
+
+build-indep:
+
+# Build architecture-independent files here.
+binary-indep: install 
+
+# Build architecture-dependent files here.
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs CHANGELOG
+	dh_installdocs
+	dh_installdirs
+	## ------
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install configure

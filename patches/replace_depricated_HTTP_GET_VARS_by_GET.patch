@@ -1,0 +1,61 @@
+Description: HTTP_GET_VARS is deprecated, replace with _GET
+Author: Paul Gevers <elbrus@debian.org>
+
+Index: bandwidthd-2.0.1+cvs20090917/phphtdocs/failures.php
+===================================================================
+--- bandwidthd-2.0.1+cvs20090917.orig/phphtdocs/failures.php
++++ bandwidthd-2.0.1+cvs20090917/phphtdocs/failures.php
+@@ -7,7 +7,7 @@ $db = ConnectDb();
+ 
+ $PHP_SELF = "failures.php";
+ 
+-if ($HTTP_GET_VARS['reset_links'] != "")
++if ($_GET['reset_links'] != "")
+ 	{
+ 	pg_query("delete from links where last_update < now()-interval '10 minutes';");
+ 	header("Location: $PHP_SELF");
+Index: bandwidthd-2.0.1+cvs20090917/phphtdocs/location_statistics.php
+===================================================================
+--- bandwidthd-2.0.1+cvs20090917.orig/phphtdocs/location_statistics.php
++++ bandwidthd-2.0.1+cvs20090917/phphtdocs/location_statistics.php
+@@ -7,7 +7,7 @@ include("header.php");
+ <?php
+ $db = ConnectDb();
+ 
+-$location_id = $HTTP_GET_VARS['location_id'];
++$location_id = $_GET['location_id'];
+ $locations = pg_query("SELECT * from locations where id = $location_id");
+ if (!$locations)
+     echo "<TR><TD>No matching locations in database...</center>";
+Index: bandwidthd-2.0.1+cvs20090917/phphtdocs/manage/manage_sensors.php
+===================================================================
+--- bandwidthd-2.0.1+cvs20090917.orig/phphtdocs/manage/manage_sensors.php
++++ bandwidthd-2.0.1+cvs20090917/phphtdocs/manage/manage_sensors.php
+@@ -22,9 +22,9 @@ if ($HTTP_POST_VARS['submit'] == "Update
+ 
+ include("manage_header.php");
+ 
+-if ($HTTP_GET_VARS['del_sensor'] != "")
++if ($_GET['del_sensor'] != "")
+     {
+-	$result = pg_query("select * from sensors where sensor_name = '".$HTTP_GET_VARS['del_sensor']."';");
++	$result = pg_query("select * from sensors where sensor_name = '".$_GET['del_sensor']."';");
+ 	while ($r = @pg_fetch_array($result))
+ 		{
+ 		echo("Please wait while deleting records from tables...<BR>\n");
+Index: bandwidthd-2.0.1+cvs20090917/phphtdocs/manage/manage_symbols.php
+===================================================================
+--- bandwidthd-2.0.1+cvs20090917.orig/phphtdocs/manage/manage_symbols.php
++++ bandwidthd-2.0.1+cvs20090917/phphtdocs/manage/manage_symbols.php
+@@ -12,9 +12,9 @@ if ($HTTP_POST_VARS['submit'] == "Add Sl
+ 	exit(0);
+ 	}
+ 
+-if ($HTTP_GET_VARS['del_slice'] != "")
++if ($_GET['del_slice'] != "")
+ 	{
+-	pg_query("delete from slices where id = ".$HTTP_GET_VARS['del_slice'].";");
++	pg_query("delete from slices where id = ".$_GET['del_slice'].";");
+ 	header("Location: ".$PHP_SELF);
+ 	exit(0);	
+ 	}

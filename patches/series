@@ -1,0 +1,17 @@
+0001-Disable-installation-of-bandwidthd.conf-from-orig-so.patch
+0002-fix-version-in-configure-script.patch
+0003-Add-configure-option-for-pgsql-support.patch
+0004-Include-filename-in-syntax-error-logging.patch
+0005-Add-missing-MAIL-table-header-to-generated-static-ht.patch
+0006-Add-missing-comma-to-fix-syntax-in-created-CDF-files.patch
+0007-Fix-recover-CDF-option.patch
+0008-Fix-subnet-reporting-in-syslog-message.patch
+0009-Make-HTML-output-valid-and-prevent-sql-injection-in-.patch
+0010-Add-proper-script-header-and-use-for-loop-since-echo.patch
+0011-Fetch-database-credentials-from-external-file.patch
+fix-gcc-5-ftbfs.patch
+convert_short_php_syntax_to_long.patch
+replace_depricated_HTTP_GET_VARS_by_GET.patch
+fix-gcc-10-ftbfs.patch
+cross.patch
+vlan.patch

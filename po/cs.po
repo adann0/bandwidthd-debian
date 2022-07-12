@@ -1,0 +1,175 @@
+# Bandwidthd Czech translation.
+# Copyright (C) 2006
+# This file is distributed under the same license as the bandwidthd package.
+# Martin Sin <martin.sin@zshk.cz>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bandwidthd 2.0.1+cvs20050208-6\n"
+"Report-Msgid-Bugs-To: andreas@fatal.se\n"
+"POT-Creation-Date: 2007-03-23 10:46+0100\n"
+"PO-Revision-Date: 2007-03-29 19:43+0200\n"
+"Last-Translator: Martin Sin <martin.sin@zshk.cz>\n"
+"Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Description
+#: ../templates:1001
+msgid "Interface to listen on:"
+msgstr "Rozhraní, na kterém poslouchat:"
+
+#. Type: select
+#. Description
+#: ../templates:1001
+msgid ""
+"Bandwidthd needs to know which interface it should listen for traffic on. "
+"Only a single interface can be specified. If you want to listen on all "
+"interfaces you should specify the metainterface \"any\". Running "
+"\"bandwidthd -l\" will list available interfaces."
+msgstr ""
+"Bandwidthd potřebuje znát jméno rozhraní, na kterém má naslouchat síťovému "
+"provozu. Můžete určit pouze jediné rozhraní. Pokud chcete naslouchat na "
+"všech rozhraních, zadejte pseudorozhraní \"any\". Seznam dostupných rozhraní "
+"zobrazíte příkazem \"bandwidthd -l\"."
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid "Subnets to log details about:"
+msgstr "Podsítě, o kterých se budou logovat informace:"
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid ""
+"Bandwidthd can create graphs for one or several ip-subnets. Subnets are "
+"specified either in dotted-quad format (192.168.0.0 255.255.0.0) or in CIDR "
+"format (192.168.0.0/16) and separated by a comma. Example: 192.168.0.0/16, "
+"10.0.0.0 255.0.0.0, 172.16.1.0/24. If you don't know what to specify then "
+"you can use 0.0.0.0/0 but it is strongly discouraged."
+msgstr ""
+"Bandwidthd může vytvářet grafy pro celou řadu podsítí. Ty jsou určeny buď "
+"klasicky (192.168.0.0 255.255.0.0), nebo pomocí formátu CIDR "
+"(192.168.0.0/16) a jsou odděleny pomocí čárky. Například: 192.168.0.0/16, "
+"10.0.0.0 255.0.0.0, 172.16.1.0/24. Pokud nevíte co zadat, můžete použít "
+"0.0.0.0/0, což se ale silně nedoporučuje."
+
+#. Type: boolean
+#. Description
+#: ../templates:3001
+msgid "Output CDF data logs?"
+msgstr "Vytvářet datové logy typu CDF?"
+
+#. Type: boolean
+#. Description
+#: ../templates:3001
+msgid ""
+"Bandwidthd can log captured traffic information to Common Data File (CDF) "
+"logs. These logs are required if you want to keep old information stored "
+"between restarts of the bandwidthd daemon. Also see the recovercdf "
+"configuration option."
+msgstr ""
+"Bandwidthd může logovat získané informace o provozu do logů typu CDF (Common "
+"Data File). Tyto logy jsou nutné v okamžiku, kdy chcete uchovat staré "
+"informace mezi jednotlivými restarty daemona bandwidthd. Podívejte se také "
+"na konfigurační volbu recovercdf."
+
+#. Type: boolean
+#. Description
+#: ../templates:4001
+msgid "Recover old data from logs on restart?"
+msgstr "Obnovit při restartu stará data z logu?"
+
+#. Type: boolean
+#. Description
+#: ../templates:4001
+msgid ""
+"If old data is going to be outputed in the graphs, it needs to be read when "
+"BandwidthD is restarted. Parsing the CDF logs can take quite some time on a "
+"slow machine so you might want to disable it, but then you'll lose the "
+"information in the graphs after a reboot and similar.... Also make sure the "
+"output_cdf config option is enabled."
+msgstr ""
+"Pokud chcete v grafech zobrazit i stará data, je potřeba je načíst při "
+"restartu BandwidthD. Analýza logů CDF může chvíli zabrat a zpomalit počítač, "
+"takže ji možná budete chtít vypnout. Tím ale z grafů ztratíte informace při "
+"každém restartu atd.... Také se prosím ujistěte, že je zapnutá konfigurační "
+"volba output_cdf."
+
+#. Type: string
+#. Description
+#: ../templates:5001
+msgid "Graph webpage autorefresh delay (seconds):"
+msgstr "Interval automatické obnovy stránky s grafem (v sekundách):"
+
+#. Type: string
+#. Description
+#: ../templates:5001
+msgid ""
+"With this option you can tweak the delay used in the html as \"META REFRESH"
+"\" value. The default is 150 seconds (2.5 minutes). To disable automatic "
+"reloads of the webpage enter 0. This way the visitor will have to manually "
+"push refresh in his browser to get updated graphs."
+msgstr ""
+"Pomocí této volby můžete změnit zpoždění použité v html značce \"META REFRESH"
+"\". Výchozí je 150 sekund (2,5 minuty). Pro vypnutí těchto automatických "
+"obnov stránky zadejte hodnotu 0. Pak bude muset návštěvník stránku "
+"aktualizovat ručně."
+
+#. Type: boolean
+#. Description
+#: ../templates:6001
+msgid "Put interface in PROMISC mode?"
+msgstr "Nastavit rozhraní do promiskuitního módu?"
+
+#. Type: boolean
+#. Description
+#: ../templates:6001
+msgid ""
+"If this option is enabled, all interfaces used to capture traffic "
+"information will be put in promiscuous mode. This way traffic thats not "
+"routed via the machine running bandwidthd might be trackable anyway. "
+"Enabling promiscuous mode will probably not be able to capture any more "
+"traffic in a normal switched network. Also rootkit detectors might warn "
+"about bandwidthd being a virus if using promiscuous mode. You should "
+"probably leave this option disabled."
+msgstr ""
+"Pokud povolíte tuto volbu, budou všechna rozhraní nastavená pro snímání "
+"informací o provozu přepnuta do promiskuitního módu. V tomto režimu bude "
+"možné sledovat i provoz, který není směrován skrz počítač s běžícím "
+"bandwidthd. Nicméně povolením promiskuitního módu v běžné přepínané síti "
+"pravděpodobně žádné další informace nezískáte. V případě, že tento mód "
+"zapnete, mohou některé detektory rootkitů považovat bandwidthd za virus. "
+"Pravděpodobně byste měli nechat tuto volbu vypnutou."
+
+#. Type: string
+#. Description
+#: ../templates:7001
+msgid "This sensors identification string:"
+msgstr "Identifikační řetězec tohoto senzoru:"
+
+#. Type: string
+#. Description
+#: ../templates:7001
+msgid ""
+"Each sensor should have an identification string to be able to tell from "
+"where the traffic in the PostgreSQL-database was detected on. This option is "
+"usually set to the fully qualified hostname of the machine running the "
+"bandwidthd sensor. This needs to be a unique string which no other "
+"bandwidthd sensor that reports to the same database uses."
+msgstr ""
+"Každý senzor by měl mít nějaký identifikační řetězec, abyste mohli z "
+"databáze PostgreSQL rozlišit, na kterém senzoru byl provoz pozorován. Tato "
+"volba se obvykle nastavuje na úplný název počítače, na kterém běží senzor "
+"bandwidthd. Tento řetězec musí být jedinečný a nesmí tak kolidovat s žádným "
+"jiným senzorem, který se používá ve stejné databázi."
+
+#~ msgid "Listen on which interface?"
+#~ msgstr "Na kterém rozhraní mám naslouchat?"
+
+#~ msgid "Instruct webbrowser to refresh the graph after how many seconds?"
+#~ msgstr "Jak často se má aktualizovat pohled na grafy ve webovém prohlížeči?"

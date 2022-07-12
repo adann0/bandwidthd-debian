@@ -1,0 +1,201 @@
+Description: Fix ftbfs with GCC-10
+
+Author: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Bug-Debian: https://bugs.debian.org/957034
+Forwarded: no
+
+---
+
+--- bandwidthd-2.0.1+cvs20090917.orig/bandwidthd.c
++++ bandwidthd-2.0.1+cvs20090917/bandwidthd.c
+@@ -651,6 +651,79 @@ void ParseBroadcast(const u_char *in)
+ 		}
+ 	}
+ 
++// ************ This function adds the packet's size to the proper entries in the data structure
++static inline void Credit(struct Statistics *Stats, const struct ip *ip)
++    {
++    unsigned long size;
++    const struct tcphdr *tcp;
++    uint16_t port;
++	int Counter;
++
++    size = ntohs(ip->ip_len);
++
++    Stats->total += size;
++	Stats->packet_count++;
++
++    switch(ip->ip_p)
++        {
++        case 6:     // TCP
++            tcp = (struct tcphdr *)(ip+1);
++			tcp = (struct tcphdr *) ( ((char *)tcp) + ((ip->ip_hl-5)*4) ); // Compensate for IP Options
++            Stats->tcp += size;
++
++			// This is a wierd way to do this, I know, but the old "if/then" structure burned alot more CPU
++			for (port = ntohs(tcp->TCPHDR_DPORT), Counter=2 ; Counter ; port = ntohs(tcp->TCPHDR_SPORT), Counter--)
++				{
++				switch(port)
++					{
++					case 110:
++					case 25:
++					case 143:
++					case 587:
++						Stats->mail += size;
++						return;
++					case 80:
++					case 443:
++						Stats->http += size;
++						return;
++					case 20:
++					case 21:
++						Stats->ftp += size;
++						return;
++					case 1044: 	// Direct File Express
++					case 1045:	// ''  <- Dito Marks
++					case 1214:	// Grokster, Kaza, Morpheus
++					case 4661:  // EDonkey 2000
++					case 4662:  // ''
++					case 4665:  // ''
++					case 5190:  // Song Spy
++					case 5500:  // Hotline Connect
++					case 5501:  // ''
++					case 5502:  // ''
++					case 5503:  // ''
++					case 6346:  // Gnutella Engine
++					case 6347:  // ''
++					case 6666:  // Yoink
++					case 6667:  // ''
++					case 7788:  // Budy Share
++					case 8888:  // AudioGnome, OpenNap, Swaptor
++					case 8889:  // AudioGnome, OpenNap
++					case 28864: // hotComm
++					case 28865: // hotComm
++						Stats->p2p += size;
++						return;
++					}
++				}
++           	return;
++        case 17:
++            Stats->udp += size;
++            return;
++        case 1: 
++            Stats->icmp += size;
++            return;
++        }
++    }
++
+ void PacketCallback(u_char *user, const struct pcap_pkthdr *h, const u_char *p)
+     {
+     unsigned int Counter;
+@@ -769,78 +842,6 @@ void MonitorSubnet(unsigned int ip, unsi
+ 	SubnetCount++;
+ 	}
+ 
+-inline void Credit(struct Statistics *Stats, const struct ip *ip)
+-    {
+-    unsigned long size;
+-    const struct tcphdr *tcp;
+-    uint16_t port;
+-	int Counter;
+-
+-    size = ntohs(ip->ip_len);
+-
+-    Stats->total += size;
+-	Stats->packet_count++;
+-    
+-    switch(ip->ip_p)
+-        {
+-        case 6:     // TCP
+-            tcp = (struct tcphdr *)(ip+1);
+-			tcp = (struct tcphdr *) ( ((char *)tcp) + ((ip->ip_hl-5)*4) ); // Compensate for IP Options
+-            Stats->tcp += size;
+-
+-			// This is a wierd way to do this, I know, but the old "if/then" structure burned alot more CPU
+-			for (port = ntohs(tcp->TCPHDR_DPORT), Counter=2 ; Counter ; port = ntohs(tcp->TCPHDR_SPORT), Counter--)
+-				{
+-				switch(port)
+-					{
+-					case 110:
+-					case 25:
+-					case 143:
+-					case 587:
+-						Stats->mail += size;
+-						return;
+-					case 80:
+-					case 443:
+-						Stats->http += size;
+-						return;
+-					case 20:
+-					case 21:
+-						Stats->ftp += size;
+-						return;					
+-					case 1044: 	// Direct File Express
+-					case 1045:	// ''  <- Dito Marks
+-					case 1214:	// Grokster, Kaza, Morpheus
+-					case 4661:  // EDonkey 2000
+-					case 4662:  // ''
+-					case 4665:  // ''
+-					case 5190:  // Song Spy
+-					case 5500:  // Hotline Connect
+-					case 5501:  // ''
+-					case 5502:  // ''
+-					case 5503:  // ''
+-					case 6346:  // Gnutella Engine
+-					case 6347:  // ''
+-					case 6666:  // Yoink
+-					case 6667:  // ''
+-					case 7788:  // Budy Share
+-					case 8888:  // AudioGnome, OpenNap, Swaptor
+-					case 8889:  // AudioGnome, OpenNap
+-					case 28864: // hotComm				
+-					case 28865: // hotComm
+-						Stats->p2p += size;
+-						return;	
+-					}
+-				}
+-           	return;
+-        case 17:
+-            Stats->udp += size;
+-            return;
+-        case 1: 
+-            Stats->icmp += size;
+-            return;
+-        }
+-    }
+-
+ // TODO:  Throw away old data!
+ void DropOldData(long int timestamp) 	// Go through the ram datastore and dump old data
+ 	{
+--- bandwidthd-2.0.1+cvs20090917.orig/bandwidthd.h
++++ bandwidthd-2.0.1+cvs20090917/bandwidthd.h
+@@ -134,7 +134,8 @@ struct SubnetData
+     {
+     uint32_t ip;
+     uint32_t mask;
+-    } SubnetTable[SUBNET_NUM];
++    };
++extern struct SubnetData SubnetTable[SUBNET_NUM];
+ 
+ struct Statistics
+     {
+@@ -157,7 +158,8 @@ struct IPData
+     uint32_t ip;	// Host byte order
+     struct Statistics Send;
+     struct Statistics Receive;
+-    } IpTable[IP_NUM];
++    };
++extern struct IPData IpTable[IP_NUM];
+ 
+ struct SummaryData
+ 	{
+@@ -230,9 +232,6 @@ char	 	*HostIp2CharIp(unsigned long ipad
+ // ************ This function converts the numbers for each quad into an IP
+ inline uint32_t IpAddr(unsigned char q1, unsigned char q2, unsigned char q3, unsigned char q4);
+ 
+-// ************ This function adds the packet's size to the proper entries in the data structure
+-inline void     Credit(struct Statistics *Stats, const struct ip *ip);
+-
+ // ************ Finds an IP in our IPTable
+ inline struct IPData *FindIp(uint32_t ipaddr);
+ 

@@ -1,0 +1,33 @@
+--- a/bandwidthd.c	2016-05-06 17:13:29.000000000 -0400
++++ b/bandwidthd.c	2016-05-09 13:21:56.436443065 -0400
+@@ -18,6 +18,8 @@
+ // ****************************************************************************************
+ 
+ #define SNAPLEN 100
++/* VLAN ethertype */
++#define VLAN_ETHERTYPE 0x8100
+ 
+ static pcap_t *pd;
+ 
+@@ -654,6 +656,7 @@
+ void PacketCallback(u_char *user, const struct pcap_pkthdr *h, const u_char *p)
+     {
+     unsigned int Counter;
++    unsigned short VLAN_Offset = 0;
+ 
+     u_int caplen = h->caplen;
+ 	struct ether_header *eptr;
+@@ -671,8 +674,11 @@
+ 	if (eptr->ether_type == htons(1537))
+ 		ParseBroadcast(p);
+ 
+-    caplen -= IP_Offset;  // We're only measuring ip size, so pull off the ethernet header
+-    p += IP_Offset; // Move the pointer past the datalink header
++    if(eptr->ether_type == htons(VLAN_ETHERTYPE))
++        if(IP_Offset == 14)
++            VLAN_Offset = 4;
++    caplen -= (IP_Offset + VLAN_Offset);  // We're only measuring ip size, so pull off the ethernet header
++    p += (IP_Offset + VLAN_Offset); // Move the pointer past the datalink header
+ 
+     ip = (const struct ip *)p; // Point ip at the ip header
+ 

@@ -1,0 +1,92 @@
+Description: Multiple php file were missing the php magic syntax
+ causing the rendering to go wrong and errors like:
+ Call to undefined function connectdb() in XXX
+Author: Paul Gevers <elbrus@debian.org>
+
+Index: bandwidthd-2.0.1+cvs20090917/phphtdocs/include.php
+===================================================================
+--- bandwidthd-2.0.1+cvs20090917.orig/phphtdocs/include.php
++++ bandwidthd-2.0.1+cvs20090917/phphtdocs/include.php
+@@ -1,4 +1,4 @@
+-<?
++<?php
+ // Emulate register_globals off
+ if (ini_get('register_globals')) {
+    $superglobals = array($_SERVER, $_ENV,
+Index: bandwidthd-2.0.1+cvs20090917/phphtdocs/failures.php
+===================================================================
+--- bandwidthd-2.0.1+cvs20090917.orig/phphtdocs/failures.php
++++ bandwidthd-2.0.1+cvs20090917/phphtdocs/failures.php
+@@ -1,4 +1,4 @@
+-<?
++<?php
+ include("include.php");
+ $subtitle = "Failure Report";
+ include("header.php");
+@@ -15,7 +15,7 @@ if ($HTTP_GET_VARS['reset_links'] != "")
+ ?>
+ 
+ <h3>Failed Routers</h3>
+-<?
++<?php
+ $res = pg_query("
+ SELECT sensor_name, management_url, name as loc_name, date_trunc('seconds', min(now()-last_connection))- interval '4 minutes' as missing 
+ FROM sensors, locations 
+@@ -43,7 +43,7 @@ else
+ <TABLE width=100% cellpadding=0 cellspacing=0>
+ <TR><TH class=row-header-left>First Tower<TH class=row-header-middle>Second Tower<TH class=row-header-middle>First Router
+ <TH class=row-header-middle>Second Router<TH class=row-header-right>Last Update
+-<?
++<?php
+ $links = pg_query("
+ SELECT loc_a.name as loc_a_name, loc_b.name as loc_b_name, sens_a.sensor_id as sens_a_id, sens_a.sensor_name as sens_a_name,
+     sens_a.interface as sens_a_interface, sens_b.sensor_id as sens_b_id, sens_b.sensor_name as sens_b_name,
+@@ -69,7 +69,7 @@ while ($r = @pg_fetch_array($links))
+ </table>
+ <h3>Low Rates</h3>
+ </CENTER>
+-<?
++<?php
+ /*$res = pg_query("SELECT sensor_name, interface, management_url, signal, wireless from sensors, extension_log 
+ 	WHERE sensors.sensor_id = extension_log.sensor_id and wireless like '%Frequency:5.%'	
+ 		and wireless not like '%Bit Rate:0kb/s%' order by signal
+Index: bandwidthd-2.0.1+cvs20090917/phphtdocs/details.php
+===================================================================
+--- bandwidthd-2.0.1+cvs20090917.orig/phphtdocs/details.php
++++ bandwidthd-2.0.1+cvs20090917/phphtdocs/details.php
+@@ -1,4 +1,4 @@
+-<?
++<?php
+ include("include.php");
+ include("header.php");
+ 
+Index: bandwidthd-2.0.1+cvs20090917/phphtdocs/location_statistics.php
+===================================================================
+--- bandwidthd-2.0.1+cvs20090917.orig/phphtdocs/location_statistics.php
++++ bandwidthd-2.0.1+cvs20090917/phphtdocs/location_statistics.php
+@@ -1,10 +1,10 @@
+-<?
++<?php
+ include("include.php");
+ $subtitle = "Location Statistics";
+ include("header.php");
+ ?>
+ <center><img src="legend.gif"></center>
+-<?
++<?php
+ $db = ConnectDb();
+ 
+ $location_id = $HTTP_GET_VARS['location_id'];
+Index: bandwidthd-2.0.1+cvs20090917/phphtdocs/sensors.php
+===================================================================
+--- bandwidthd-2.0.1+cvs20090917.orig/phphtdocs/sensors.php
++++ bandwidthd-2.0.1+cvs20090917/phphtdocs/sensors.php
+@@ -32,7 +32,7 @@ $db = ConnectDb();
+ <table width="100%" cellspacing=0 cellpadding=5 border=1>
+ <tr>
+ <td>
+-<?
++<?php
+ $sql = "SELECT sensor_name, interface, sensor_id from sensors order by sensor_name, interface;";
+ $result = @pg_query($sql);
+ if (!$result)

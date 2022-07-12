@@ -1,0 +1,23 @@
+This package was debianized by Andreas Henriksson <andreas@fatal.se> on
+Tue,  6 Jan 2004 17:02:32 +0100.
+
+It was downloaded from http://bandwidthd.sourceforge.net/
+
+Upstream Authors:
+ David R Hinkle <hinkle@derbyworks.net>
+ Brice Beaman <brice@beamans.org>
+ Blaze <ts@spective.net>
+
+Copyright:
+
+ Development of BandwidthD is funded and provided under the GPL by DerbyTech
+ wireless networking and Linux consulting services, David Hinkle and numerous
+ voluneteers.
+
+  Copyright (c) 2004-2009 DerbyTech wireless networking, David Hinkle, et.al.
+
+License:
+
+ This software is distributed under the GNU General Public License,
+ which can be found at /usr/share/common-licenses/GPL-2.
+

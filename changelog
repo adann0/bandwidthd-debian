@@ -1,0 +1,548 @@
+bandwidthd (2.0.1+cvs20090917-13) unstable; urgency=medium
+
+  * QA upload.
+
+  [ Logan Rosen ]
+  * Recommend to PHP 7 instead of no longer available PHP 5. (Closes: #977576)
+
+  [ Helmut Grohne ]
+  * Fix FTCBFS: (Closes: #911255)
+    + Let dh_auto_configure pass --host to ./configure.
+    + cross.patch: Don't use AC_CHECK_FILE for build machine files.
+    + Don't strip during make install.
+
+  [ Andy Lowther ]
+  * Add debian/patches/vlan.patch to correctly capture vlan tagged traffic
+    (Closes: #824055)
+
+ -- Andreas Henriksson <andreas@fatal.se>  Fri, 12 Feb 2021 09:43:10 +0100
+
+bandwidthd (2.0.1+cvs20090917-12) unstable; urgency=medium
+
+  * QA upload.
+  * Fix ftbfs with GCC-10. (Closes: #957034)
+  * Add dependency on lsb-base.
+
+ -- Sudip Mukherjee <sudipm.mukherjee@gmail.com>  Thu, 06 Aug 2020 21:45:40 +0100
+
+bandwidthd (2.0.1+cvs20090917-11) unstable; urgency=medium
+
+  * Orphan package.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Fri, 15 Sep 2017 10:41:04 +0200
+
+bandwidthd (2.0.1+cvs20090917-10) unstable; urgency=medium
+
+  * Fix bandwidthd{,-pgsql}.preinst to have proper shebang and set -e
+    (Closes: #843272, #843276)
+  * Add pt_BR translation. (Closes: #816932)
+  * Add it translation. (Closes: #748447)
+
+ -- Andreas Henriksson <andreas@fatal.se>  Sat, 05 Nov 2016 22:06:18 +0100
+
+bandwidthd (2.0.1+cvs20090917-9) unstable; urgency=medium
+
+  [ Paul Gevers ]
+  * Improve use of dbconfig-common for bandwidthd-pgsql (Closes: #789445)
+    - it never created a working configuration file
+    - it didn't ask for cleanup
+    - it didn't recommend postgresl server
+    - the answers from dbconfig-common were used before the questions
+      were asked, yielding old answers upon upgrade, and non-functional
+      defaults when installing
+    - Typo in prerm script prevented proper clean-up on removal
+  * Add patch to change short <? notation to <?php
+  * Add patch to replace deprecated $HTTP_GET_VARS by $_GET
+
+  [ Andreas Henriksson ]
+  * Demote newly added postgres recommends to suggests
+    - The main purpose of bandwidthd-pgsql is to allow multiple
+      "sensors" monitoring traffic at different nodes to report to a
+      central (likely remote) database.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Mon, 06 Jul 2015 07:48:07 +0200
+
+bandwidthd (2.0.1+cvs20090917-8) unstable; urgency=medium
+
+  * Add debian/patches/fix-gcc-5-ftbfs.patch (Closes: #777794)
+
+ -- Andreas Henriksson <andreas@fatal.se>  Tue, 16 Jun 2015 14:51:29 +0200
+
+bandwidthd (2.0.1+cvs20090917-7) unstable; urgency=low
+
+  * Move php5-gd to Recommends and also recommend php5 (Closes: #717042)
+  * Improve meta-data in patch header of 44_fixrecovercdf.patch
+  * Drop autoheader/autoconf patches as we're using dh-autoreconf
+  * Add patch to fix syslog messages for monitored subnet.
+    Thanks to John Murphy (Closes: #614942)
+  * Let gb-pq import && gbp-pq export rename patches
+  * Make bandwidthd-pgsql also recommend php5-pgsql (Closes: #659237)
+
+ -- Andreas Henriksson <andreas@fatal.se>  Sat, 20 Jul 2013 18:19:35 +0200
+
+bandwidthd (2.0.1+cvs20090917-6) unstable; urgency=low
+
+  * This version includes multiple changes (see below)
+    to handle the apache 2.4 transition (Closes: #669734)
+
+  * Bump debhelper compatibility to 9
+  * Bump standards-version to policy 3.9.3
+  * Install/migrate to new apache 2.4 config file location
+  * Add conflicts against apache2 (<< 2.4)
+  * Suggest apache2, since we ship configuration for it
+  * Update apache configuration for new allow-syntax
+  * Use apache2-maintscript-helper for reloading apache2
+  * Please lintian with formatting copyright as it expects
+  * Drop AllowOverride from apache configuration
+  * Use dh_prep instead of deprecated dh_clean -k
+  * Bump Standards-Version to 3.9.4
+  * Add build-arch and build-indep targets to debian/rules
+  * Run wrap-and-sort on debian/control
+  * Use dh-autoreconf to update build system (Closes: #677940)
+  * Drop all alternative libgd-dev build-dependencies
+  * Install configuration templates to /usr/share (Closes: #710357)
+  * Move bandwidthd-pgsql config and postinst commands around
+    - update similar to previous bandwidthd changes
+
+ -- Andreas Henriksson <andreas@fatal.se>  Fri, 14 Jun 2013 00:12:30 +0200
+
+bandwidthd (2.0.1+cvs20090917-5) unstable; urgency=low
+
+  Acknowledge NMU (Closes: #610057)
+
+  [ Andreas Henriksson ]
+  * Initial attempt at modernization of the packaging:
+    + Switch from dpatch to source format 3.0 (quilt)
+    + Drop dpatch build dependency
+    + Update patch headers according to patch tagging guidelines (DEP3)
+    + Fix patch syntax in d/p/61_php_fix_html_and_input_validation.patch
+
+  [ Logan Gunthorpe ]
+  * Add patch to fix recover cdf option (Closes: #660810)
+
+  [ Andreas Henriksson ]
+  * Fix the problem of failing configure on clean install (Closes: #588146)
+    + Move bandwidthd.conf generation from config to postinst phase
+    + Only generate bandwidthd.conf when postinst are in configure mode
+  * Drop generated config.{guess,sub} files
+  * Reload the apache2 config last in postrm to avoid debconf problems
+
+ -- Andreas Henriksson <andreas@fatal.se>  Thu, 08 Mar 2012 16:04:46 +0100
+
+bandwidthd (2.0.1+cvs20090917-4.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix encoding for Danish debconf translation
+
+ -- Christian Perrier <bubulle@debian.org>  Tue, 11 Jan 2011 20:14:02 +0100
+
+bandwidthd (2.0.1+cvs20090917-4) unstable; urgency=low
+
+  * Officially acknowledge NMU (which was pre-acked by personal email)
+  * debian/patches/43_cdfsyntax.dpatch, debian/patches/00list
+    + Include patch to fix CDF output contributed by Harald Hvaal.
+  * debian/po/es.po (Closes: #580482)
+    + Add spanish translation by Francisco Javier Cuadrado.
+  * debian/po/vi.po (Closes: #581530)
+    + Add vietnamese translation by Clytie Siddall.
+  * Don't uselessly source debconf in debian/bandwidthd.postinst.
+  * Stop debconf in debian/bandwidthd.config
+
+ -- Andreas Henriksson <andreas@fatal.se>  Mon, 31 May 2010 19:58:23 +0200
+
+bandwidthd (2.0.1+cvs20090917-3.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Explicitly point to GPL-2 document in debian/copyright
+  * Explicitly use 1.0 source format
+  * Fix spelling in README.Debian ("childs"->"children")
+  * Add $remote_fs to Required-Start and Required-Stop in init script
+  * Fix pending l10n issues. Debconf translations:
+    - Japanese (Hideki Yamane (Debian-JP)).  Closes: #555547
+    - Danish (Joe Hansen).  Closes: #580122
+
+ -- Christian Perrier <bubulle@debian.org>  Thu, 06 May 2010 08:55:57 +0200
+
+bandwidthd (2.0.1+cvs20090917-3) unstable; urgency=low
+
+  * Oops, move debian/ru.po to debian/po/ru.po (Closes: #543192)
+
+ -- Andreas Henriksson <andreas@fatal.se>  Tue, 22 Sep 2009 07:25:50 +0200
+
+bandwidthd (2.0.1+cvs20090917-2) unstable; urgency=low
+
+  * Call ucf with --debconf-ok during package config.
+  * Add debian/patches/42_graphmailheader.dpatch:
+    - Upstream added mail traffic tracking but forgot to add the table
+      header to the generated static html header.
+  * Reload apache2 after package installation and reload after package purge,
+    ignoring errors to make (potentially) installed apache2 pick up the
+    /bandwidthd/ alias.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Thu, 17 Sep 2009 15:46:54 +0200
+
+bandwidthd (2.0.1+cvs20090917-1) unstable; urgency=low
+
+  * New upstream CVS snapshot.
+    - Update debian/patches/21_fixversion.dpatch to reflect new version.
+  * Add Russion debconf translation, thanks Yuri Kozlov! (Closes: #543192)
+  * Add Apache2 config file for /bandwidthd alias. (Closes: #536912)
+  * Drop dpatch script debian/patches/01_config.dpatch and copy/remove
+    config.{guess,sub} in debian/rules.
+  * Update debian/patches/61_php_fix_html_and_input_validation.dpatch to apply.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Thu, 17 Sep 2009 09:34:01 +0200
+
+bandwidthd (2.0.1+cvs20071208-3) unstable; urgency=low
+
+  * Fix variable order in bandwidthd init script.
+    Thanks to "Lampa" for noticing.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Sat, 03 May 2008 23:27:01 +0200
+
+bandwidthd (2.0.1+cvs20071208-2) unstable; urgency=low
+
+  * Update debian/patches/71_sh_bd_purge_add_shebang.dpatch to fix bashism
+    found in the bd_pgsql_purge script. (Closes: #471290)
+
+ -- Andreas Henriksson <andreas@fatal.se>  Mon, 17 Mar 2008 10:26:42 +0100
+
+bandwidthd (2.0.1+cvs20071208-1) unstable; urgency=low
+
+  * Update to newer cvs checkout.
+  * Add dpatch support.
+    - Move all package changes over to patches.
+  * Build-depend on autotools-dev and use dpatch template to update
+    config.{sub,guess} at build time.
+    - Also add overrides for linda warnings introduced by this.
+  * Add new debconf translations (Closes: #419051, #423065):
+    - pt.po by Luís Picciochi / Portuguese Translation Team
+    - nl.po by cobaco (aka Bart Cornelis)
+  * Use lsb output functions and killproc function to stop daemon in init.d
+    script. (Not using start_daemon function since chdir is needed.)
+  * Add dbconfig-common support to bandwidthd-pgsql package.
+    - update bandwidthd-pgsql.config to put dbconfig-common variables in the
+      bandwidthd.conf file.
+  * add patch to get php interface to use dbconfig-common variables for
+    postgresql authentication string.
+  * add patch to fix up php scripts (prevent sql injections and output
+    valid html code).
+  * Bump to policy 3.7.3
+  * Move homepage field from description to a proper field in debian/control.
+  * Add postgresql-client to dependencies for bandwidthd-pgsql as it uses
+    psql in the crontab for summarizer / db maintenance.
+  * Add php5-gd to bandwidthd-pgsql dependencies, used to create graphs in
+    the php scripts.
+  * Add patch 71_sh_bd_purge_add_shebang, with a proper header for the
+    bd_pgsql_purge script.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Sat, 10 Dec 2007 16:09:35 +0100
+
+bandwidthd (2.0.1+cvs20050208-11) unstable; urgency=high
+
+  * Fix elif statement in debian/bandwidthd.config
+  * Add LSB section to init.d script.
+  * Fix /sbin/route subnet output parsing to include subnetmask.
+  * Fix config writing to handle different subnet syntax for CIDR vs.
+    dotted-quad. ("subnet 1.2.3.4/32" vs "subnet 1.2.3.4 255.255.255.0")
+  * Add updated german debconf translation. (Closes: #414592)
+  * Correct several minor language mistakes in the template. (Closes: #414591)
+    Thanks for the two above to Helge Kreutzmann!
+  * Simplify guard against missing ucf in postrm purge so it actually works.
+    (Closes: #416651), Thanks to Michael Ablassmeier - RC bug = high severity.
+  * Update czech debconf translation (fuzzy string+spelling error)
+    Thanks to Miroslav Kure.
+  * Update french translations (fuzzy strings), Thanks Christian Perrier.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Fri,  9 Mar 2007 00:12:41 +0100
+
+bandwidthd (2.0.1+cvs20050208-10) unstable; urgency=low
+
+  * Change build-dep from postgresql-dev to libpq-dev (Closes: #396562)
+
+ -- Andreas Henriksson <andreas@fatal.se>  Wed,  1 Nov 2006 21:55:46 +0100
+
+bandwidthd (2.0.1+cvs20050208-9) unstable; urgency=medium
+
+  * Don't fail if ucf isn't available on postrm. (Closes: #389967)
+  * ucf --purge apparently isn't enough to remove the config files,
+    use rm to finish the job.
+  * Remove cdf logs and graphs when purging the static bandwidthd package.
+  * Indent Homepage in package description with an extra space as
+    suggested in the 6.2.4 "Upstream home page" part of Debian Developer's
+    Reference - Best Packaging Practices.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Thu, 28 Sep 2006 23:10:04 +0200
+
+bandwidthd (2.0.1+cvs20050208-8) unstable; urgency=low
+
+  The "James Westby Rocks" cleanup-edition:
+  (Thanks for reviewing and giving lots of helpful cleanup suggestions)
+
+  * Skip fourth number in Standards-Version.
+  * Update to debhelper compat 5 - no changes needed apparently.
+    - change build-dependency to >= 5.0.0
+  * Use "Homepage:" in package description for upstream website.
+  * Use variables ($DESC) everywhere instead of writing out the value
+    in the init.d script.
+  * Update headers in debian/po/ translation files.
+  * Simplify distclean rule in debian/rules.
+  * Remove (more or less) empty debian/*.prerm files.
+  * Add build-dependency on po-debconf.
+
+  * I've also got a new email address (s/fjortis.info/fatal.se/).
+
+ -- Andreas Henriksson <andreas@fatal.se>  Thu, 21 Sep 2006 10:30:45 +0200
+
+bandwidthd (2.0.1+cvs20050208-7) unstable; urgency=low
+
+  * Move misplaced binary-indep rules to install in
+    debian/rules. (Closes: #372710)
+  * Implement bandwidthd-pgsql.conf template usage in debconf script, 
+    debian/bandwidthd-pgsql.config.
+  * Update debian/TODO.
+  * Refrase debconf template as recommended by policy in
+    debian/templates according to lintian suggestion.
+  * Bump up Standards-Version to debian-policy 3.7.2.1.
+  * Update Swedish translation (sv).
+  * Add Czech translation (cs), thanks to Martin Šín (Closes: #382233)
+  * Add French translation (fr), thanks to Steve (Closes: #313182, #384427)
+  * Fix parsing of iproute2 route output for /32 routes.
+    - Thanks to Alexis Huxley for debugging.
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Mon, 31 Jul 2006 15:37:32 +0200
+
+bandwidthd (2.0.1+cvs20050208-6) unstable; urgency=low
+
+  * Added missing dependency on ucf.
+  * Update to debian-policy 3.7.0.0.
+  * Moved to using po-debconf for debconf translations.
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Sun, 30 Apr 2006 15:42:33 +0200
+
+bandwidthd (2.0.1+cvs20050208-5) unstable; urgency=low
+
+  * Lintian cleanups.
+    - Remove bashism from debian/*.config scripts.
+    - Purge debconf database in bandwidthd-pgsql postrm.
+    - Add dh_installdebconf in debian/rules and readd ${misc:Depends}
+      to Depends-field in debian/control (for debconf).
+    - Change Type-field in debian/bandwidthd.templates from integer to
+      string for metarefresh.
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Thu, 29 Dec 2005 15:18:58 +0100
+
+bandwidthd (2.0.1+cvs20050208-4) unstable; urgency=low
+
+  * The "lets fix the fuckups in previous version" release.
+  * Only bandwidthd-pgsql should depend on libpq. Clean between builds.
+  * Fix up description formating by deleting personal url for package source
+    (Closes: #328178).
+  * Add debconf to generate configuration file (non-pgsql version only).
+  * Fixed up BASHism in init.d script (hopefully correct now),
+    thanks to Alexander Gerasiov. (Closes: #328576)
+  * Add ".. in bandwidthd.conf" to syntax error message. (Closes: #328577)
+  * Modify build-dependencies on libgd2. (Closes: #343921, #335661)
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Fri, 23 Dec 2005 21:53:56 +0200
+
+bandwidthd (2.0.1+cvs20050208-3) unstable; urgency=low
+
+  * neilm@debian.org agreed to sponsor bandwidthd! Fixed up the stuff in his
+      initial comments.
+  * Fixed version number (...-x.y reserved for NMUs).
+  * Fixed lintian warnings.
+    - Upgraded to policy 3.6.2.1.
+    - Replaced ancient config.sub, config.guess with new versions from
+      /usr/share/automake/.
+    - Added manpage in bandwidthd-pgsql package (needs update!).
+    - Added init.d script in bandwidthd-pgsql package.
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Fri, 26 Aug 2005 07:11:16 +0200
+
+bandwidthd (2.0.1+cvs20050208-2.1) unstable; urgency=low
+
+  * More work on the bandwidthd-pgsql package.
+  - static package tested and working.
+  - added pgsql-specific part of bandwidthd.conf in pgsql-package.
+  - added php-scripts to htdocs dir in pgsql-package.
+  - added warning notice in init.d-script for unconfigured pgsql connection
+    strings in config.
+  - updated README.Debian with (untested) pgsql administration examples.
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Fri, 22 Jul 2005 20:24:49 +0200
+
+bandwidthd (2.0.1+cvs20050208-2) unstable; urgency=low
+
+  * Attempt at multibinary package - bandwidthd & bandwidthd-pgsql.
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Sun, 27 Feb 2005 15:22:28 +0100
+
+bandwidthd (2.0.1+cvs20050208-1) unstable; urgency=low
+
+  * Update to CVS as of 8 Feb, 2005 which includes support for changing paths.
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Tue,  8 Feb 2005 18:35:53 +0100
+
+bandwidthd (2.0.1) unstable; urgency=low
+
+  * New upstream release.
+    (database logging feature disabled.)
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Thu, 13 Jan 2005 20:31:37 +0100
+
+bandwidthd (1.2.1b-14) unstable; urgency=low
+
+  "Thanks for the testing release."
+
+  * Fixed bug forever disabling graphing if there's one run which doesn't
+    catch a single packet.
+  * Comment out 27 printf-lines in bandwidthd.c and 2 in conf.y to get rid
+    of the startup spam.
+  * Wrote some lines about the config in README.Debian.
+  * Added note about defunct processes in README.Debian.
+  * Moved TODO-part from README.Debian to TODO.Debian.
+  * Added warning about recover_cdf in bandwidthd.conf manpage.
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Sun, 11 Jul 2004 21:07:01 +0200
+
+bandwidthd (1.2.1b-13) unstable; urgency=low
+
+  * Disabled automatically generated post{inst,rm} and prerm scripts again
+    since an already running bandwidthd where not shut down properly on
+    package upgrade.
+    (Kept debhelper-token in script but added -n flag to dh_installinit to
+    prevent it from modifying scripts.)
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Tue,  6 Jul 2004 17:44:22 +0200
+
+bandwidthd (1.2.1b-12) unstable; urgency=low
+
+  The lintian cleanup release.
+  * Added manpages bandwidthd(8) and bandwidthd.conf(5).
+  * Added debhelper-token to maintainer scripts and removed parts that where
+    duplicated when debhelper inserted it's changes.
+  * Adjusted copyright-file.
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Mon,  5 Jul 2004 21:15:31 +0200
+
+bandwidthd (1.2.1b-11) unstable; urgency=low
+
+  * Changed build-depends to use pcap0.8 and gd2 instead of transitional
+    packages pointing to pcap0.7 and gd1.
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Fri,  2 Jul 2004 09:01:43 +0200
+
+bandwidthd (1.2.1b-10) unstable; urgency=low
+
+  Thanks to Petr Stehlik <pstehlik@sophics.cz> for testing the package
+  on woody and suggesting an easy way to fix the file hierarchy problem.
+
+  * Included reworked patches (which has been sent to upstream).
+  * Included postinst, prerm, postrm scripts stolen from pdns.
+  * Fixed up 2 minor issues in init.d-script for woody compability.
+  
+  This release puts the log*.cdf in /var/lib/bandwidthd/ and the html files
+  in /var/lib/bandwidthd/htdocs/ instead of working out of /etc/bandwidthd/.
+  The config files stays /etc/bandwidthd/bandwidthd.conf (obviously) though.
+  The current solution still requires chdir, but that will hopefully soon be
+  dealt with.
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Tue, 29 Jun 2004 19:29:01 +0200
+
+bandwidthd (1.2.1b-9) unstable; urgency=low
+
+  Thanks to Bartosz Fenski aka fEnIo <fenio@o2.pl> for improvement
+  suggestions!
+
+  * Changed to Standards-Version 3.6.1.0 in debian/control
+  * Changed to Section "net" in debian/control
+  * Small change to debian/copyright
+  * More TODO-items added in README.Debian
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Thu, 17 Jun 2004 00:31:39 +0200
+
+bandwidthd (1.2.1b-8) unstable; urgency=low
+
+  * Updated README.Debian
+  * Fixed subnet page html syntax.
+  * Moved "Programmed by..." to right below the logo.
+  * Added bison and flex to build-depends.
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Mon, 14 Jun 2004 22:59:20 +0200
+
+bandwidthd (1.2.1b-7) unstable; urgency=low
+
+  * Changed init.d-script to use SIGUSR1/SIGUSR2.
+  * Fixed up signals. Forgot to install the handler for USR1/USR2. ;)
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Mon,  7 Jun 2004 19:40:32 +0200
+
+bandwidthd (1.2.1b-6) unstable; urgency=low
+
+  * Changed debian/rules to run dist-clean to avoid useless changes in diff.
+  * Changed signal handling to be able to get the parent to signal the
+    all the children. Sending SIGUSR1 to pid in /var/run/bandwidthd.pid now
+    terminates all processes. Likewise SIGUSR2 does logrotate.
+    (Logs aren't rotated for any other process then the main one, so SIGUSR2
+    is pretty useless. The signal is propagated so when logrotate is enabled
+    for all processes it will work.)
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Mon,  7 Jun 2004 19:07:51 +0200
+
+bandwidthd (1.2.1b-5) unstable; urgency=low
+
+  * Added config option to set seconds in "META REFRESH".
+    Can also be disabled totally by setting it to 0.
+  * Rewrote fork-handling for graph-processes.
+    (Preparation for better signal handling.)
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Fri,  4 Jun 2004 13:09:00 +0200
+
+bandwidthd (1.2.1b-4) unstable; urgency=low
+
+  * Fixed up the html syntax in the files generated by bandwithd.
+    Hopefully got everything right. :)
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Sun, 30 May 2004 20:37:04 +0200
+
+bandwidthd (1.2.1b-3) unstable; urgency=low
+
+  * Ugh, seems like I somehow misplaced all the init.d-script changes.
+    Rewrite bandwidthd init.d script (again).
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Sun, 30 May 2004 19:24:20 +0200
+
+bandwidthd (1.2.1b-2) unstable; urgency=low
+
+  * changed the init.d script to handle missing pidfile and added some
+    paranoia in the log rotate function.
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Thu, 27 May 2004 19:54:34 +0200
+
+bandwidthd (1.2.1b-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Thu, 27 May 2004 19:29:54 +0200
+
+bandwidthd (1.2.0b-2) unstable; urgency=low
+
+  * Removed hack from fork2 and moved it into main().
+    (since fork2() now is used on more places.)
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Sun,  1 Feb 2004 11:02:37 +0100
+
+bandwidthd (1.2.0b-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Sat, 31 Jan 2004 18:39:20 +0100
+
+bandwidthd (1.1.7-1) unstable; urgency=low
+
+  * Initial Release.
+  * Hacked fork2() to write pidfile.
+
+ -- Andreas Henriksson <andreas@fjortis.info>  Tue,  6 Jan 2004 17:02:32 +0100
+

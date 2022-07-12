@@ -1,0 +1,24 @@
+From: Andreas Henriksson <andreas@fatal.se>
+Date: Sat, 20 Jul 2013 18:17:14 +0200
+Subject: Include filename in syntax error logging
+
+Say which file the syntax error is in, to make logged error message clear.
+---
+ conf.y | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/conf.y b/conf.y
+index 30563a0..4c1dca4 100644
+--- a/conf.y
++++ b/conf.y
+@@ -20,8 +20,8 @@ int LineNo = 1;
+ 
+ void bdconfig_error(const char *str)
+     {
+-    fprintf(stderr, "Syntax Error \"%s\" on line %d\n", str, LineNo);
+-	syslog(LOG_ERR, "Syntax Error \"%s\" on line %d", str, LineNo);
++    fprintf(stderr, "Syntax Error \"%s\" on line %d in bandwidthd.conf\n", str, LineNo);
++	syslog(LOG_ERR, "Syntax Error \"%s\" on line %d in bandwidthd.conf", str, LineNo);
+ 	exit(1);
+     }
+ 

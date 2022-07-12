@@ -1,0 +1,19 @@
+--- bandwidthd-2.0.1+cvs20090917.orig/configure.in
++++ bandwidthd-2.0.1+cvs20090917/configure.in
+@@ -30,12 +30,12 @@
+ CPPFLAGS="$CPPFLAGS -I/usr/local/include"
+ 
+ #Check for Darwin sw directory
+-AC_CHECK_FILE(/sw/lib, LDFLAGS="$LDFLAGS -L/sw/lib")
+-AC_CHECK_FILE(/sw/include, CPPFLAGS="$CPPFLAGS -I/sw/include")
++test -d /sw/lib && LDFLAGS="$LDFLAGS -L/sw/lib"
++test -d /sw/include && CPPFLAGS="$CPPFLAGS -I/sw/include"
+ 
+ #Check for NetBSD usr/pkg directory
+-AC_CHECK_FILE(/usr/pkg/lib, LDFLAGS="$LDFLAGS -L/usr/pkg/lib")
+-AC_CHECK_FILE(/usr/pkg/include, CPPFLAGS="$CPPFLAGS -I/usr/pkg/include")
++test -d /usr/pkg/lib LDFLAGS="$LDFLAGS -L/usr/pkg/lib"
++test -d /usr/pkg/include CPPFLAGS="$CPPFLAGS -I/usr/pkg/include"
+ 
+ # Required for solaris
+ AC_CHECK_LIB(socket, connect)

@@ -1,0 +1,34 @@
+From: Harald Hvaal <harald.hvaal@gmail.com>
+Date: Sat, 20 Jul 2013 18:17:14 +0200
+Subject: Add missing comma to fix syntax in created CDF files.
+
+I've been using bandwidthd for a while, but since upgrading to lucid I          noticed my parsing started acting up, so I investigated. Eventually
+discovered that bandwidthd's CDF writing has been broken since a
+certain commit last year:
+
+http://bandwidthd.cvs.sourceforge.net/viewvc/bandwidthd/bandwidthd/bandwidthd.c?r1=1.52&r2=1.53
+
+You can see there's two fprintf statements there, but after that
+commit there is no comma between the last value of the first fprintf,
+and the first value of the second fprintf. It's even easier to spot if
+you look at an actual line in a CDF file since this, where you get a
+field like "01329001" which is a concatenation of "0" and "1329001".
+The fix for this is of course trivial, you just need to add a comma to
+the end of the first fprintf on line 827:
+---
+ bandwidthd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/bandwidthd.c b/bandwidthd.c
+index dc6b0d3..7d40c0c 100644
+--- a/bandwidthd.c
++++ b/bandwidthd.c
+@@ -910,7 +910,7 @@ void StoreIPDataInCDF(struct IPData IncData[])
+ 		HostIp2CharIp(IPData->ip, IPBuffer);
+ 		fprintf(cdf, "%s,%lu,", IPBuffer, IPData->timestamp);
+ 		Stats = &(IPData->Send);
+-		fprintf(cdf, "%llu,%llu,%llu,%llu,%llu,%llu,%llu,%llu", Stats->total, Stats->icmp, Stats->udp, Stats->tcp, Stats->ftp, Stats->http, Stats->mail, Stats->p2p); 
++		fprintf(cdf, "%llu,%llu,%llu,%llu,%llu,%llu,%llu,%llu,", Stats->total, Stats->icmp, Stats->udp, Stats->tcp, Stats->ftp, Stats->http, Stats->mail, Stats->p2p); 
+ 		Stats = &(IPData->Receive);
+ 		fprintf(cdf, "%llu,%llu,%llu,%llu,%llu,%llu,%llu,%llu\n", Stats->total, Stats->icmp, Stats->udp, Stats->tcp, Stats->ftp, Stats->http, Stats->mail, Stats->p2p); 		
+ 		}

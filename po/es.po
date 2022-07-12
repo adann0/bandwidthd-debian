@@ -1,0 +1,195 @@
+# bandwidthd po-debconf translation to Spanish
+# Copyright (C) 2010 Software in the Public Interest
+# This file is distributed under the same license as the bandwidthd package.
+#
+# Changes:
+#   - Initial translation
+#       Francisco Javier Cuadrado <fcocuadrado@gmail.com>, 2010
+#
+# Traductores, si no conocen el formato PO, merece la pena leer la
+# documentación de gettext, especialmente las secciones dedicadas a este
+# formato, por ejemplo ejecutando:
+#       info -n '(gettext)PO Files'
+#       info -n '(gettext)Header Entry'
+#
+# Equipo de traducción al español, por favor lean antes de traducir
+# los siguientes documentos:
+#
+#   - El proyecto de traducción de Debian al español
+#     http://www.debian.org/intl/spanish/
+#     especialmente las notas y normas de traducción en
+#     http://www.debian.org/intl/spanish/notas
+#
+#   - La guía de traducción de po's de debconf:
+#     /usr/share/doc/po-debconf/README-trans
+#     o http://www.debian.org/intl/l10n/po-debconf/README-trans
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bandwidthd 2.0.1+cvs20090917-3\n"
+"Report-Msgid-Bugs-To: andreas@fatal.se\n"
+"POT-Creation-Date: 2007-03-23 10:46+0100\n"
+"PO-Revision-Date: 2010-04-29 09:30+0200\n"
+"Last-Translator: Francisco Javier Cuadrado <fcocuadrado@gmail.com>\n"
+"Language-Team: Debian l10n Spanish <debian-l10n-spanish@lists.debian.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Description
+#: ../templates:1001
+msgid "Interface to listen on:"
+msgstr "Interfaz a escuchar:"
+
+#. Type: select
+#. Description
+#: ../templates:1001
+msgid ""
+"Bandwidthd needs to know which interface it should listen for traffic on. "
+"Only a single interface can be specified. If you want to listen on all "
+"interfaces you should specify the metainterface \"any\". Running "
+"\"bandwidthd -l\" will list available interfaces."
+msgstr ""
+"Bandwidthd necesita conocer en que interfaz debería escuchar el tráfico. "
+"Sólo se puede especificar una única interfaz. Si quiere escuchar todas las "
+"interfaces debería especificar la meta-interfaz «any». Para listar todas las "
+"interfaces disponibles ejecute «bandwidthd -l»."
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid "Subnets to log details about:"
+msgstr "Subredes a registrar:"
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid ""
+"Bandwidthd can create graphs for one or several ip-subnets. Subnets are "
+"specified either in dotted-quad format (192.168.0.0 255.255.0.0) or in CIDR "
+"format (192.168.0.0/16) and separated by a comma. Example: 192.168.0.0/16, "
+"10.0.0.0 255.0.0.0, 172.16.1.0/24. If you don't know what to specify then "
+"you can use 0.0.0.0/0 but it is strongly discouraged."
+msgstr ""
+"Bandwidthd puede crear gráficas para una o más subredes. Las subredes se "
+"pueden especificar en formato de cuatro puntos (192.168.0.0 255.255.0.0) o "
+"en formato CIDR (192.168.0.0/16), y separadas por comas. Por ejemplo: "
+"192.168.0.0/16, 10.0.0.0 255.0.0.0, 172.16.1.0/24. Si no sabe qué poner "
+"entonces puede utilizar 0.0.0.0/0, aunque se desaconseja totalmente."
+
+#. Type: boolean
+#. Description
+#: ../templates:3001
+msgid "Output CDF data logs?"
+msgstr "¿Desea crear registros CDF de datos?"
+
+#. Type: boolean
+#. Description
+#: ../templates:3001
+msgid ""
+"Bandwidthd can log captured traffic information to Common Data File (CDF) "
+"logs. These logs are required if you want to keep old information stored "
+"between restarts of the bandwidthd daemon. Also see the recovercdf "
+"configuration option."
+msgstr ""
+"Bandwidthd puede registrar la información del tráfico capturado en registros "
+"CDF («Common Data File»). Estos registros son necesarios si quiere mantener "
+"la información antigua almacenada entre reinicios del demonio bandwidthd. "
+"Vea también la opción de configuración «recovercdf»."
+
+#. Type: boolean
+#. Description
+#: ../templates:4001
+msgid "Recover old data from logs on restart?"
+msgstr ""
+"¿Desea recuperar la información antigua a partir de los registros al "
+"reiniciar?"
+
+#. Type: boolean
+#. Description
+#: ../templates:4001
+msgid ""
+"If old data is going to be outputed in the graphs, it needs to be read when "
+"BandwidthD is restarted. Parsing the CDF logs can take quite some time on a "
+"slow machine so you might want to disable it, but then you'll lose the "
+"information in the graphs after a reboot and similar.... Also make sure the "
+"output_cdf config option is enabled."
+msgstr ""
+"Si la información se va a mostrar en los gráficos, se necesita leer cuando "
+"se reinicie bandwidthd. Analizar los registros CDF puede tardar algún tiempo "
+"en una máquina lenta de modo que podría querer desactivarlo, pero entonces "
+"perdería la información de los gráficos después de reiniciar... Asegúrese "
+"también de que la opción de configuración «output_cdf» está activa."
+
+#. Type: string
+#. Description
+#: ../templates:5001
+msgid "Graph webpage autorefresh delay (seconds):"
+msgstr ""
+"Intervalo (en segundos) para la actualización automática de la página web de "
+"los gráficos:"
+
+#. Type: string
+#. Description
+#: ../templates:5001
+msgid ""
+"With this option you can tweak the delay used in the html as \"META REFRESH"
+"\" value. The default is 150 seconds (2.5 minutes). To disable automatic "
+"reloads of the webpage enter 0. This way the visitor will have to manually "
+"push refresh in his browser to get updated graphs."
+msgstr ""
+"Con esta opción puede ajustar el intervalo utilizado en el campo «META "
+"REFRESH» del archivo html. El valor predeterminado es 150 segundos (2.5 "
+"minutos). Para desactivar la recarga automática introduzca el valor cero. De "
+"este modo el visitante tendrá que actualizar manualmente desde su navegador "
+"para obtener los gráficos actualizados."
+
+#. Type: boolean
+#. Description
+#: ../templates:6001
+msgid "Put interface in PROMISC mode?"
+msgstr "¿Desea poner la interfaz en modo «PROMISC» (promiscuo)?"
+
+#. Type: boolean
+#. Description
+#: ../templates:6001
+msgid ""
+"If this option is enabled, all interfaces used to capture traffic "
+"information will be put in promiscuous mode. This way traffic thats not "
+"routed via the machine running bandwidthd might be trackable anyway. "
+"Enabling promiscuous mode will probably not be able to capture any more "
+"traffic in a normal switched network. Also rootkit detectors might warn "
+"about bandwidthd being a virus if using promiscuous mode. You should "
+"probably leave this option disabled."
+msgstr ""
+"Si se activa esta opción, todas las interfaces utilizadas para capturar "
+"información del tráfico se pondrán en modo promiscuo. De este modo el "
+"tráfico que no se dirija a la máquina que ejecuta bandwidthd puede seguirse. "
+"Activar el modo promiscuo probablemente no podrá capturar más tráfico que el "
+"modo normal en una red con switches. Si utiliza el modo promiscuo, también "
+"puede ocurrir que los detectores de «rootkits» avisen que bandwidthd sea un "
+"virus. Lo más probable es que debería dejar esta opción desactivada."
+
+#. Type: string
+#. Description
+#: ../templates:7001
+msgid "This sensors identification string:"
+msgstr "Cadena de identificación de los sensores:"
+
+#. Type: string
+#. Description
+#: ../templates:7001
+msgid ""
+"Each sensor should have an identification string to be able to tell from "
+"where the traffic in the PostgreSQL-database was detected on. This option is "
+"usually set to the fully qualified hostname of the machine running the "
+"bandwidthd sensor. This needs to be a unique string which no other "
+"bandwidthd sensor that reports to the same database uses."
+msgstr ""
+"Cada sensor debería tener una cadena de identificación para poder indicar "
+"dónde se detectó el tráfico de la base de datos PostgreSQL. Esta opción "
+"normalmente está configurada con el nombre completo de la máquina que "
+"ejecuta el sensor de bandwidthd. Este valor debe ser único y no debe haber "
+"otro sensor de bandwidthd que informe en la misma base de datos."

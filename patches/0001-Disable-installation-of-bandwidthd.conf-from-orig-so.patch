@@ -1,0 +1,21 @@
+From: Andreas Henriksson <andreas@fatal.se>
+Date: Sat, 20 Jul 2013 18:17:14 +0200
+Subject: Disable installation of bandwidthd.conf from orig source
+
+---
+ Makefile.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile.in b/Makefile.in
+index 3de8e94..288624b 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -54,7 +54,7 @@ install: all
+ 	@INSTALL@ -d $(DESTDIR)$(sysconfdir)
+ 	@INSTALL@ -d $(DESTDIR)$(localstatedir)/bandwidthd/htdocs
+ 	@INSTALL@ -m755 -s bandwidthd $(DESTDIR)$(bindir)	
+-	if [ ! -f $(DESTDIR)$(sysconfdir)/bandwidthd.conf ] ; then @INSTALL@ -m644 etc/bandwidthd.conf $(DESTDIR)$(sysconfdir); fi
++	#if [ ! -f $(DESTDIR)$(sysconfdir)/bandwidthd.conf ] ; then @INSTALL@ -m644 etc/bandwidthd.conf $(DESTDIR)$(sysconfdir); fi
+ 	@INSTALL@ -m644 htdocs/legend.gif $(DESTDIR)$(localstatedir)/bandwidthd/htdocs
+ 	@INSTALL@ -m644 htdocs/logo.gif $(DESTDIR)$(localstatedir)/bandwidthd/htdocs
+ 

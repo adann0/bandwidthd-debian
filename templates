@@ -1,0 +1,67 @@
+Template: bandwidthd/dev
+Type: select
+Choices: ${interfaces}
+_Description: Interface to listen on:
+ Bandwidthd needs to know which interface it should listen for traffic on.
+ Only a single interface can be specified. If you want to listen on all
+ interfaces you should specify the metainterface "any".
+ Running "bandwidthd -l" will list available interfaces.
+
+Template: bandwidthd/subnet
+Type: string
+_Description: Subnets to log details about:
+ Bandwidthd can create graphs for one or several ip-subnets. Subnets are
+ specified either in dotted-quad format (192.168.0.0 255.255.0.0) or in
+ CIDR format (192.168.0.0/16) and separated by a comma.
+ Example: 192.168.0.0/16, 10.0.0.0 255.0.0.0, 172.16.1.0/24.
+ If you don't know what to specify then you can use 0.0.0.0/0 but it is
+ strongly discouraged.
+
+Template: bandwidthd/outputcdf
+Type: boolean
+Default: true
+_Description: Output CDF data logs?
+ Bandwidthd can log captured traffic information to Common Data File (CDF)
+ logs. These logs are required if you want to keep old information stored
+ between restarts of the bandwidthd daemon. Also see the recovercdf
+ configuration option.
+
+Template: bandwidthd/recovercdf
+Type: boolean
+Default: true
+_Description: Recover old data from logs on restart?
+ If old data is going to be outputed in the graphs, it needs to be read
+ when BandwidthD is restarted. Parsing the CDF logs can take quite some
+ time on a slow machine so you might want to disable it, but then you'll
+ lose the information in the graphs after a reboot and similar.... Also make
+ sure the output_cdf config option is enabled.
+
+Template: bandwidthd/metarefresh
+Type: string
+_Description: Graph webpage autorefresh delay (seconds):
+ With this option you can tweak the delay used in the html as "META
+ REFRESH" value. The default is 150 seconds (2.5 minutes). To disable
+ automatic reloads of the webpage enter 0. This way the visitor will have
+ to manually push refresh in his browser to get updated graphs.
+
+Template: bandwidthd/promisc
+Type: boolean
+Default: false
+_Description: Put interface in PROMISC mode?
+ If this option is enabled, all interfaces used to capture traffic
+ information will be put in promiscuous mode. This way traffic thats not
+ routed via the machine running bandwidthd might be trackable anyway.
+ Enabling promiscuous mode will probably not be able to capture any more
+ traffic in a normal switched network. Also rootkit detectors might warn
+ about bandwidthd being a virus if using promiscuous mode. You should
+ probably leave this option disabled.
+
+Template: bandwidthd-pgsql/sensorid
+Type: string
+_Description: This sensors identification string:
+ Each sensor should have an identification string to be able to tell from
+ where the traffic in the PostgreSQL-database was detected on. This
+ option is usually set to the fully qualified hostname of the machine
+ running the bandwidthd sensor. This needs to be a unique string which
+ no other bandwidthd sensor that reports to the same database uses.
+

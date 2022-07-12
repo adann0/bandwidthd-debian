@@ -1,0 +1,31 @@
+.TH BD_PGSQL_PURGE 8 "8 Dec 2007"
+.SH NAME
+bd_pgsql_purge - summarizer script for bandwidthd (postgresql mode)
+.SH DESCRIPTION
+.LP
+This program generatet the SQL code that should be run in certain intervals to 
+summarize the data collected by bandwidthd (in postgresql mode) and purge the
+detailed records.
+The program itself only generates the SQL code. You need to feed it to your
+postgresql server yourself, which can be done by piping the output to the psql
+program. Adding a crontab script that runs weekly and cleans up the database
+is recommended.
+.br
+.SH FILES
+.nf
+/usr/sbin/bd_pgsql_purge		- the script to generate sql code
+/etc/cron.weekly/bandwidthd-pgsql	- default schedule for bd_pgsql_purge
+.fi
+.SH SEE ALSO
+bandwidthd(8)
+bandwidthd.conf(5)
+psql(1)
+.br
+.sp
+Furter information available at the website:
+.br
+.I http://bandwidthd.sourceforge.net
+.SH AUTHOR
+This manual page was written by Andreas Henriksson <andreas@fatal.se>, for
+the Debian GNU/Linux system.
+

@@ -1,0 +1,175 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bandwidthd\n"
+"Report-Msgid-Bugs-To: andreas@fatal.se\n"
+"POT-Creation-Date: 2007-03-23 10:46+0100\n"
+"PO-Revision-Date: 2007-05-01 17:22+0100\n"
+"Last-Translator: Bart Cornelis <cobaco@skolelinux.no>\n"
+"Language-Team: debian-l10n-dutch <debian-l10n-dutch@lists.debian.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Dutch\n"
+
+#. Type: select
+#. Description
+#: ../templates:1001
+msgid "Interface to listen on:"
+msgstr "Interface waarop te luisteren:"
+
+#. Type: select
+#. Description
+#: ../templates:1001
+msgid ""
+"Bandwidthd needs to know which interface it should listen for traffic on. "
+"Only a single interface can be specified. If you want to listen on all "
+"interfaces you should specify the metainterface \"any\". Running "
+"\"bandwidthd -l\" will list available interfaces."
+msgstr ""
+"Bandwidthd dient te weten op welke interface geluisterd moet worden voor "
+"verkeer. Er kan slechts één interface opgegeven worden. Als u op alle "
+"interfaces wilt luisteren dient u hier de meta-interface 'any' op te geven. "
+"Het commando 'bandwidthd -l' geeft de beschikbare interfaces weer."
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid "Subnets to log details about:"
+msgstr "Subnets waarvoor details gelogd moeten worden:"
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid ""
+"Bandwidthd can create graphs for one or several ip-subnets. Subnets are "
+"specified either in dotted-quad format (192.168.0.0 255.255.0.0) or in CIDR "
+"format (192.168.0.0/16) and separated by a comma. Example: 192.168.0.0/16, "
+"10.0.0.0 255.0.0.0, 172.16.1.0/24. If you don't know what to specify then "
+"you can use 0.0.0.0/0 but it is strongly discouraged."
+msgstr ""
+"Bandwidthd kan grafieken voor één of meer ip-subnetten genereren. Subnetten "
+"kunnen opgegeven worden in 'dotted-quad'-formaat (192.168.0.0 255.255.0.0) "
+"of in CIDR-formaat (192.168.0.0/16) en dienen gescheiden te zijn door "
+"komma's. Voorbeeld: 192.168.0.0/16, 10.0.0.0 255.0.0.0, 172.16.1.0/24. Als u "
+"niet weet wat hier op te geven kunt u altijd 0.0.0.0/0 gebruiken, al is dit "
+"sterk af te raden."
+
+#. Type: boolean
+#. Description
+#: ../templates:3001
+msgid "Output CDF data logs?"
+msgstr "Wilt u CDF-datalogs uitvoeren?"
+
+#. Type: boolean
+#. Description
+#: ../templates:3001
+msgid ""
+"Bandwidthd can log captured traffic information to Common Data File (CDF) "
+"logs. These logs are required if you want to keep old information stored "
+"between restarts of the bandwidthd daemon. Also see the recovercdf "
+"configuration option."
+msgstr ""
+"Bandwidth kan het de onderschepte verkeersinformatie loggen in CDF-formaat "
+"(Common Data file). Deze logs zijn vereist als u wilt dat oude informatie "
+"opgeslagen wordt tussen herstarts avn de bandwidthd-achtergronddienst. Zie "
+"ook de recovercdf configuratie-optie."
+
+#. Type: boolean
+#. Description
+#: ../templates:4001
+msgid "Recover old data from logs on restart?"
+msgstr "Wilt u oude datalogs herstellen bij herstarts?"
+
+#. Type: boolean
+#. Description
+#: ../templates:4001
+msgid ""
+"If old data is going to be outputed in the graphs, it needs to be read when "
+"BandwidthD is restarted. Parsing the CDF logs can take quite some time on a "
+"slow machine so you might want to disable it, but then you'll lose the "
+"information in the graphs after a reboot and similar.... Also make sure the "
+"output_cdf config option is enabled."
+msgstr ""
+"Als oude data uitgevoerd moet worden in de grafieken dient deze ingelezen te "
+"worden bij het starten van bandwidthd. Parsen van de CDF-logs kan enige tijd "
+"in beslag nemen en op een trage machine kan het dan ook aan te raden zijn om "
+"dit uit te schakelen, al verliest u dan wel de infroamtie in de grafieken na "
+"een herstart... Ook dient u ervoor te zorgen dat de configuratieoptie "
+"'output_cdf' geactiveerd is."
+
+#. Type: string
+#. Description
+#: ../templates:5001
+msgid "Graph webpage autorefresh delay (seconds):"
+msgstr ""
+"Automatisch verversingsinterval voor de grafiek-webpagina (in seconden):"
+
+#. Type: string
+#. Description
+#: ../templates:5001
+msgid ""
+"With this option you can tweak the delay used in the html as \"META REFRESH"
+"\" value. The default is 150 seconds (2.5 minutes). To disable automatic "
+"reloads of the webpage enter 0. This way the visitor will have to manually "
+"push refresh in his browser to get updated graphs."
+msgstr ""
+"Met deze optie kunt u het interval instellen dat in de html-code gebruikt "
+"wordt wal waarde voor 'META REFRESH'. De standaardwaarde is 150 seconden "
+"(2,5 minuten). Als u automatisch herladen van de webpagina wilt uitschakelen "
+"dient u hier 0 aan te geven, bezoekers dienen dan handmatig de pagina te "
+"verversen om bijgewerkte grafieken te zien te krijgen."
+
+#. Type: boolean
+#. Description
+#: ../templates:6001
+msgid "Put interface in PROMISC mode?"
+msgstr "Wilt u de interface naar PROMISC-modus omschakelen?"
+
+#. Type: boolean
+#. Description
+#: ../templates:6001
+msgid ""
+"If this option is enabled, all interfaces used to capture traffic "
+"information will be put in promiscuous mode. This way traffic thats not "
+"routed via the machine running bandwidthd might be trackable anyway. "
+"Enabling promiscuous mode will probably not be able to capture any more "
+"traffic in a normal switched network. Also rootkit detectors might warn "
+"about bandwidthd being a virus if using promiscuous mode. You should "
+"probably leave this option disabled."
+msgstr ""
+"Als deze optie geactiveerd is worden alle interfaces waarop verkeer "
+"onderschept wordt in promiscue-modus gezet. Op die manier kan verkeer dat "
+"niet via de machine waarop bandwithd draait gerout wordt toch onderschept "
+"worden. In een normaal netwerk met switches levert het activeren van "
+"promiscue modus waarschijnlijk geen extra onderschept verkeer op. Ook kan "
+"het zijn dat rootkit-detector-programma's waarschuwingen geven omtrent "
+"bandwidthd waneer deze promiscue modus gebruikt. Waarschijnlijk kunt u deze "
+"optie best gedeactiveerd laten."
+
+#. Type: string
+#. Description
+#: ../templates:7001
+msgid "This sensors identification string:"
+msgstr "De identificatiestring voor deze sensor:"
+
+#. Type: string
+#. Description
+#: ../templates:7001
+msgid ""
+"Each sensor should have an identification string to be able to tell from "
+"where the traffic in the PostgreSQL-database was detected on. This option is "
+"usually set to the fully qualified hostname of the machine running the "
+"bandwidthd sensor. This needs to be a unique string which no other "
+"bandwidthd sensor that reports to the same database uses."
+msgstr ""
+"elke sensor dient een identificatiestring te heben om te kunnen bijhouden "
+"waar het verkeer in de PostgreSQL-database gedetecteerd was. Deze optie "
+"wordt gewoonlijk ingesteld op de FQDN (Fully Qualified Domainname) van de "
+"machine waarop de bandwithd-sensor draait. Dit dient een unieke string te "
+"zijn voor de bandwithd-sensors die dezelfde database gebruiken."

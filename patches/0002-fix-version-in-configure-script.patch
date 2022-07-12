@@ -1,0 +1,23 @@
+From: Andreas Henriksson <andreas@fatal.se>
+Date: Sat, 20 Jul 2013 18:17:14 +0200
+Subject: fix version in configure script
+
+---
+ configure.in | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/configure.in b/configure.in
+index f86c4d7..6d9eea5 100644
+--- a/configure.in
++++ b/configure.in
+@@ -7,8 +7,8 @@ AC_CONFIG_HEADER([config.h])
+ 
+ MAJOR_VERSION=2
+ MINOR_VERSION=0
+-RELEASE_VERSION=0
+-EXTRA_VERSION=""
++RELEASE_VERSION=1
++EXTRA_VERSION="+cvs20090917"
+ VERSION="$MAJOR_VERSION.$MINOR_VERSION.$RELEASE_VERSION$EXTRA_VERSION"
+ 
+ # Checks for programs.
